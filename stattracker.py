@@ -48,6 +48,15 @@ class match:
         self.maps = []
         self.week = week
         
+class Hero:
+    time: int
+    name: str
+    emote: str
+
+    def __init__(self, name, emote):
+        self.name = name
+        self.time = 0
+        self.emote = emote
 
 
 #PN0, PN1, PN2, PN3, PN4, PN5, PN6, PN7, PN8, PN9, PN10, PN11, Unknown, Global, HUD, HUD Time, Map, Match Time (Seconds), Start Up, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, Team 1 Playtime, Team 2 Playtime

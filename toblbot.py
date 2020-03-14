@@ -1,7 +1,7 @@
 import discord
 import csv
 import pathlib
-from stattracker import team, player, map_round, match
+from stattracker import team, player, map_round, match, Hero
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
@@ -130,117 +130,86 @@ async def team_playtime(ctx, team_name=None):
     if team_name is None:
         await ctx.send("Missing argument: Team Name\n(ex: '$stats_player StacysMoms')")
         return
-    
-    total_time = 0
-    reaper = 0
-    tracer = 0
-    mercy = 0
-    hanzo = 0
-    torbjorn = 0
-    reinhardt = 0
-    pharah = 0
-    winston = 0
-    widowmaker = 0
-    bastion = 0
-    symmetra = 0
-    zenyatta = 0
-    genji = 0
-    roadhog = 0
-    mccree = 0
-    junkrat = 0
-    zarya = 0
-    soldier = 0
-    lucio = 0
-    dva = 0
-    mei = 0
-    sombra = 0
-    doomfist = 0
-    ana = 0
-    orisa = 0
-    brigitte = 0
-    moira = 0
-    wrecking_ball = 0
-    ashe = 0
-    baptiste = 0
-    sigma = 0
 
-    all_heroes = [Ana, Ashe, Bastion -
-Brigitte -
-D.va -
-Doomfist -
-Genji -
-Hanzo -
-Junkrat -
-Lucio -
-Mccree -
-Mei -
-Mercy -
-Moira -
-Orisa -
-Pharah -
-Reaper -
-Reinhardt -
-Roadhog -
-Soldier 76 -
-Sombra -
-Symmetra -
-Torbjorn -
-Tracer -
-Widowmaker -
-Winston -
-Wrecking Ball -
-Zarya -
-Zenyatta -]
+    total_time = 0
+    reaper = Hero("Reaper", "<:reaper:688453731850911750>")
+    tracer = Hero("Tracer", "<:tracer:688453731850911750>")
+    mercy = Hero("Mercy", "<:mercy:688453731850911750>")
+    hanzo = Hero("Hanzo", "<:hanzo:688453731850911750>")
+    torbjorn = Hero("Torbjorn", "<:torbjorn:688453731850911750>")
+    reinhardt = Hero("Reinhardt", "<:reinhardt:688453731850911750>")
+    pharah = Hero("Pharah", "<:pharah:688453731850911750>")
+    winston = Hero("Winston", "<:winston:688453731850911750>")
+    widowmaker = Hero("Widowmaker", "<:widowmaker:688453731850911750>")
+    bastion = Hero("Bastion", "<:bastion:688453731850911750>")
+    symmetra = Hero("Symmetre", "<:symmetra:688453731850911750>")
+    zenyatta = Hero("Zenyatta", "<:zenyatta:688453731850911750>")
+    genji = Hero("Genji", "<:genji:688453731850911750>")
+    roadhog = Hero("Roadhog", "<:roadhog:688453731850911750>")
+    mccree = Hero("McCree", "<:mccree:688453731850911750>")
+    junkrat = Hero("Junkrat", "<:junkrat:688453731850911750>")
+    zarya = Hero("Zarya", "<:zarya:688453731850911750>")
+    soldier = Hero("Soldier", "<:soldier:688453731850911750>")
+    lucio = Hero("Lucio", "<:lucio:688453731850911750>")
+    dva = Hero("D.Va", "<:dva:688453731850911750>")
+    mei = Hero("Mei", "<:mei:688453731850911750>")
+    sombra = Hero("Sombra", "<:sombra:688453731850911750>")
+    doomfist = Hero("Doomfist", "<:doomfist:688453731850911750>")
+    ana = Hero("Ana", "<:ana:688453731850911750>")
+    orisa = Hero("Orisa", "<:orisa:688453731850911750>")
+    brigitte = Hero("Brigitte", "<:brigitte:688453731850911750>")
+    moira = Hero("Moira", "<:moira:688453731850911750>")
+    wrecking_ball = Hero("Wrecking Ball", "<:wrecking_ball:688453731850911750>")
+    ashe = Hero("Ashe", "<:ashe:688453731850911750>")
+    baptiste = Hero("Baptiste", "<:baptiste:688453731850911750>")
+    sigma = Hero("Sigma", "<:sigma:688453731850911750>")
+
+    all_heroes = [ana, ashe, bastion, brigitte, dva, doomfist, genji, hanzo, junkrat, lucio, mccree,
+     mei, mercy, moira, orisa, pharah, reaper, reinhardt, roadhog, soldier, sombra, symmetra, torbjorn,
+     tracer, widowmaker, winston, wrecking_ball, zarya, zenyatta]
     
     for t in teams:
         if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
             for k in t.playrate_data.keys():
                 for elem in t.playrate_data[k]:
-                    total_time += elem[31]
-                    reaper += elem[0]
-                    tracer += elem[1]
-                    mercy += elem[2]
-                    hanzo += elem[3]
-                    torbjorn += elem[4]
-                    reinhardt += elem[5]
-                    pharah += elem[6]
-                    winston += elem[7]
-                    widowmaker += elem[8]
-                    bastion += elem[9]
-                    symmetra += elem[10]
-                    zenyatta += elem[11]
-                    genji += elem[12]
-                    roadhog += elem[13]
-                    mccree += elem[14]
-                    junkrat += elem[15]
-                    zarya += elem[16]
-                    soldier += elem[17]
-                    lucio += elem[18]
-                    dva += elem[19]
-                    mei += elem[20]
-                    sombra += elem[21]
-                    doomfist += elem[22]
-                    ana += elem[23]
-                    orisa += elem[24]
-                    brigitte += elem[25]
-                    moira += elem[26]
-                    wrecking_ball += elem[27]
-                    ashe += elem[28]
-                    baptiste += elem[29]
-                    sigma += elem[30]
+                    total_time.time += elem[31]
+                    reaper.time += elem[0]
+                    tracer.time += elem[1]
+                    mercy.time += elem[2]
+                    hanzo.time += elem[3]
+                    torbjorn.time += elem[4]
+                    reinhardt.time += elem[5]
+                    pharah.time += elem[6]
+                    winston.time += elem[7]
+                    widowmaker.time += elem[8]
+                    bastion.time += elem[9]
+                    symmetra.time += elem[10]
+                    zenyatta.time += elem[11]
+                    genji.time += elem[12]
+                    roadhog.time += elem[13]
+                    mccree.time += elem[14]
+                    junkrat.time += elem[15]
+                    zarya.time += elem[16]
+                    soldier.time += elem[17]
+                    lucio.time += elem[18]
+                    dva.time += elem[19]
+                    mei.time += elem[20]
+                    sombra.time += elem[21]
+                    doomfist.time += elem[22]
+                    ana.time += elem[23]
+                    orisa.time += elem[24]
+                    brigitte.time += elem[25]
+                    moira.time += elem[26]
+                    wrecking_ball.time += elem[27]
+                    ashe.time += elem[28]
+                    baptiste.time += elem[29]
+                    sigma.time += elem[30]
 
 
             embed=discord.Embed(title="Hero playtime for  " + t.name, description="", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + "{0:.2f}".format(total_elims*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + "{0:.2f}".format(total_final_blows*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + "{0:.2f}".format(total_deaths*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Damage Dealt", value="Total: " + str(total_damage_dealt) + "\nAvg/10mins: " + "{0:.2f}".format(total_damage_dealt*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Healing Dealt", value="Total: " + str(total_healing_dealt) + "\nAvg/10mins: " + "{0:.2f}".format(total_healing_dealt*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Damage Received", value="Total: " + str(total_damage_taken) + "\nAvg/10mins: " + "{0:.2f}".format(total_damage_taken*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Healing Received", value="Total: " + str(total_healing_taken) + "\nAvg/10mins: " + "{0:.2f}".format(total_healing_taken*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + "{0:.2f}".format(total_ults_used*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + "{0:.2f}".format(total_crouches*(10/temp_minutes)), inline=True)
+            for hero in all_heroes:
+                embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}".format((hero.time / total_time) * 100), inline=True)
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
             return
