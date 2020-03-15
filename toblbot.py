@@ -1,71 +1,9 @@
 import discord
 import csv
 import pathlib
-# from stattracker import team, player, map_round, match, Hero
+from stattracker import team, player, map_round, match, Hero
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
-
-class team:
-    name = str
-    players: list
-    playrate_data: dict
-
-    def __init__(self, name):
-        self.name = name
-        self.players = []
-        self.playrate_data = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []}
-
-class player:
-    map_data: dict
-    name: str
-    team: team
-    playtime: dict
-    total_playtime: int
-    sorting_stat: int
-
-    def __init__(self, name, team):
-        self.name = name
-        self.team = team
-        self.map_data = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []}
-        self.playtime = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []}
-        self.total_playtime = 0
-        self.sorting_stat = 0
-
-class map_round:
-    map_name: str
-    map_time: int
-    player_dict: dict
-    hero_playtime_1: list
-    hero_playtime_2: list
-
-    def __init__(self, map_name):
-        self.map_name = map_name
-        self.player_dict = {}
-        self.hero_playtime_1 = []
-        self.hero_playtime_2 = []
-
-
-class match:
-    teams: tuple
-    score: tuple
-    maps: list
-    week: int
-    
-    def __init__(self, teams, score, week):
-        self.teams = teams
-        self.score = score
-        self.maps = []
-        self.week = week
-        
-class Hero:
-    time: int
-    name: str
-    emote: str
-
-    def __init__(self, name, emote):
-        self.name = name
-        self.time = 0
-        self.emote = emote
 
 teams = []
 players = []
