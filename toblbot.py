@@ -126,53 +126,53 @@ async def schedule(ctx):
     await ctx.send(embed=embed)
 
 @client.command()
-async def team_playtime(ctx, team_name=None):
+async def playtime(ctx, team_name=None):
     if team_name is None:
-        await ctx.send("Missing argument: Team Name\n(ex: '$stats_player StacysMoms')")
+        await ctx.send("Missing argument: Team Name\n(ex: '$team_playtime StacysMoms')")
         return
 
     total_time = 0
-    reaper = Hero("Reaper", "<:reaper:688453731850911750>")
-    tracer = Hero("Tracer", "<:tracer:688453731850911750>")
-    mercy = Hero("Mercy", "<:mercy:688453731850911750>")
-    hanzo = Hero("Hanzo", "<:hanzo:688453731850911750>")
-    torbjorn = Hero("Torbjorn", "<:torbjorn:688453731850911750>")
-    reinhardt = Hero("Reinhardt", "<:reinhardt:688453731850911750>")
-    pharah = Hero("Pharah", "<:pharah:688453731850911750>")
-    winston = Hero("Winston", "<:winston:688453731850911750>")
-    widowmaker = Hero("Widowmaker", "<:widowmaker:688453731850911750>")
-    bastion = Hero("Bastion", "<:bastion:688453731850911750>")
-    symmetra = Hero("Symmetre", "<:symmetra:688453731850911750>")
-    zenyatta = Hero("Zenyatta", "<:zenyatta:688453731850911750>")
-    genji = Hero("Genji", "<:genji:688453731850911750>")
-    roadhog = Hero("Roadhog", "<:roadhog:688453731850911750>")
-    mccree = Hero("McCree", "<:mccree:688453731850911750>")
-    junkrat = Hero("Junkrat", "<:junkrat:688453731850911750>")
-    zarya = Hero("Zarya", "<:zarya:688453731850911750>")
-    soldier = Hero("Soldier", "<:soldier:688453731850911750>")
-    lucio = Hero("Lucio", "<:lucio:688453731850911750>")
-    dva = Hero("D.Va", "<:dva:688453731850911750>")
-    mei = Hero("Mei", "<:mei:688453731850911750>")
-    sombra = Hero("Sombra", "<:sombra:688453731850911750>")
-    doomfist = Hero("Doomfist", "<:doomfist:688453731850911750>")
-    ana = Hero("Ana", "<:ana:688453731850911750>")
-    orisa = Hero("Orisa", "<:orisa:688453731850911750>")
-    brigitte = Hero("Brigitte", "<:brigitte:688453731850911750>")
-    moira = Hero("Moira", "<:moira:688453731850911750>")
-    wrecking_ball = Hero("Wrecking Ball", "<:wrecking_ball:688453731850911750>")
-    ashe = Hero("Ashe", "<:ashe:688453731850911750>")
-    baptiste = Hero("Baptiste", "<:baptiste:688453731850911750>")
-    sigma = Hero("Sigma", "<:sigma:688453731850911750>")
+    reaper = Hero("Reaper", "<:reaper:688453034317054051>")
+    tracer = Hero("Tracer", "<:tracer:688453036506480726>")
+    mercy = Hero("Mercy", "<:mercy:688453037001408534>")
+    hanzo = Hero("Hanzo", "<:hanzo:688453035705237651>")
+    torbjorn = Hero("Torbjorn", "<:torbjorn:688453036732973073>")
+    reinhardt = Hero("Reinhardt", "<:reinhardt:688453036263473195>")
+    pharah = Hero("Pharah", "<:pharah:688453035701043318>")
+    winston = Hero("Winston", "<:winston:688453037085556955>")
+    widowmaker = Hero("Widowmaker", "<:widowmaker:688453036355354675>")
+    bastion = Hero("Bastion", "<:bastion:688453029028036722>")
+    symmetra = Hero("Symmetra", "<:symmetra:688453036716195925>")
+    zenyatta = Hero("Zenyatta", "<:zenyatta:688453036430852269>")
+    genji = Hero("Genji", "<:genji:688453035219091490>")
+    roadhog = Hero("Roadhog", "<:roadhog:688453036309348455>")
+    mccree = Hero("McCree", "<:mccree:688453036347359263>")
+    junkrat = Hero("Junkrat", "<:junkrat:688453036997214224>")
+    zarya = Hero("Zarya", "<:zarya:688453036980305942>")
+    soldier = Hero("Soldier", "<:soldier:688453036451954701>")
+    lucio = Hero("Lucio", "<:lucio:688453037198540877>")
+    dva = Hero("D.Va", "<:dva:688453035902500888>")
+    mei = Hero("Mei", "<:mei:688453036284182724>")
+    sombra = Hero("Sombra", "<:sombra:688453036007620611>")
+    doomfist = Hero("Doomfist", "<:doomfist:688453033276735488>")
+    ana = Hero("Ana", "<:ana:688453028411473925>")
+    orisa = Hero("Orisa", "<:orisa:688453036221268056>")
+    brigitte = Hero("Brigitte", "<:brigitte:688453032698052688>")
+    moira = Hero("Moira", "<:moira:688453037152403486>")
+    wrecking_ball = Hero("Wrecking Ball", "<:wrecking_ball:688453035072290816>")
+    ashe = Hero("Ashe", "<:ashe:688453030324338782>")
+    baptiste = Hero("Baptiste", "<:baptiste:688453019351908590>")
+    sigma = Hero("Sigma", "<:sigma:688453035470356480>")
 
-    all_heroes = [ana, ashe, bastion, brigitte, dva, doomfist, genji, hanzo, junkrat, lucio, mccree,
-     mei, mercy, moira, orisa, pharah, reaper, reinhardt, roadhog, soldier, sombra, symmetra, torbjorn,
+    all_heroes = [ana, ashe, baptiste, bastion, brigitte, dva, doomfist, genji, hanzo, junkrat, lucio, mccree,
+     mei, mercy, moira, orisa, pharah, reaper, reinhardt, roadhog, sigma, soldier, sombra, symmetra, torbjorn,
      tracer, widowmaker, winston, wrecking_ball, zarya, zenyatta]
     
-    for t in teams:
-        if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
+    if team_name.lower().replace("'", "") == "all":
+        for t in teams:
             for k in t.playrate_data.keys():
                 for elem in t.playrate_data[k]:
-                    total_time.time += elem[31]
+                    total_time += elem[31]
                     reaper.time += elem[0]
                     tracer.time += elem[1]
                     mercy.time += elem[2]
@@ -206,10 +206,60 @@ async def team_playtime(ctx, team_name=None):
                     sigma.time += elem[30]
 
 
-            embed=discord.Embed(title="Hero playtime for  " + t.name, description="", color=0xf3e91d)
+        embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
+        for hero in all_heroes:
+            play_perc = (hero.time / total_time) * 100
+            if play_perc != 0:
+                embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+        embed.set_footer(text=last_updated)
+        await ctx.send(embed=embed)
+        return
+
+    for t in teams:
+        if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
+            for k in t.playrate_data.keys():
+                for elem in t.playrate_data[k]:
+                    total_time += elem[31]
+                    reaper.time += elem[0]
+                    tracer.time += elem[1]
+                    mercy.time += elem[2]
+                    hanzo.time += elem[3]
+                    torbjorn.time += elem[4]
+                    reinhardt.time += elem[5]
+                    pharah.time += elem[6]
+                    winston.time += elem[7]
+                    widowmaker.time += elem[8]
+                    bastion.time += elem[9]
+                    symmetra.time += elem[10]
+                    zenyatta.time += elem[11]
+                    genji.time += elem[12]
+                    roadhog.time += elem[13]
+                    mccree.time += elem[14]
+                    junkrat.time += elem[15]
+                    zarya.time += elem[16]
+                    soldier.time += elem[17]
+                    lucio.time += elem[18]
+                    dva.time += elem[19]
+                    mei.time += elem[20]
+                    sombra.time += elem[21]
+                    doomfist.time += elem[22]
+                    ana.time += elem[23]
+                    orisa.time += elem[24]
+                    brigitte.time += elem[25]
+                    moira.time += elem[26]
+                    wrecking_ball.time += elem[27]
+                    ashe.time += elem[28]
+                    baptiste.time += elem[29]
+                    sigma.time += elem[30]
+
+
+            embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
             for hero in all_heroes:
-                embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}".format((hero.time / total_time) * 100), inline=True)
+                play_perc = (hero.time / total_time) * 100
+                if play_perc != 0:
+                    embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
             return
@@ -217,7 +267,7 @@ async def team_playtime(ctx, team_name=None):
     await ctx.send("Unable to find team with name: " + team_name + "\nRemember to omit spaces ('Stacy's Moms' -> 'Stacy'sMoms')")
 
 @client.command()
-async def stats_player(ctx, name=None):
+async def stats(ctx, name=None):
     if name is None:
         await ctx.send("Missing argument: Player Name\n(ex: '$stats_player Krusher99')")
         return
