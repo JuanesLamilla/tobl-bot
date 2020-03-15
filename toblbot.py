@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated March 13th, 2020 at 7:22 pm."
+last_updated = "Last updated March 15th, 2020 at 12:13 am."
 
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
@@ -54,9 +54,9 @@ async def maps(ctx):
     embed=discord.Embed(title="TOBL Maps", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
     embed.add_field(name="March 15th, 2020", value="Lijiang Tower, King's Row, Volskaya Industries, Junkertown, Busan", inline=True)
-    embed.add_field(name="March 22nd, 2020", value="Dorado, Oasis, Hollywood, Temple of Anubis, Watchpoint: Gilbraltar", inline=True)
-    embed.add_field(name="March 29th, 2020", value="Eichenwalde, Horizon Lunar Colony, Nepal, Numbani, Route 66", inline=True)
-    embed.add_field(name="April 5th, 2020", value="Ilios, Havana, Hanamura, King's Row, Lijiang Tower", inline=True)
+    embed.add_field(name="March 29th, 2020", value="Dorado, Oasis, Hollywood, Temple of Anubis, Watchpoint: Gilbraltar", inline=True)
+    embed.add_field(name="April 5th, 2020", value="Eichenwalde, Horizon Lunar Colony, Nepal, Numbani, Route 66", inline=True)
+    embed.add_field(name="April 19th, 2020", value="Ilios, Havana, Hanamura, King's Row, Lijiang Tower", inline=True)
     embed.add_field(name="April 26th, 2020", value="Rialto, Blizzard World, Busan, Paris, Dorado", inline=True)
     embed.add_field(name="May 3rd, 2020", value="Numbani, Volskaya Industries, Watchpoint: Gilbraltar, Eichenwalde, Oasis", inline=True)
     embed.add_field(name="May 10th, 2020", value="Nepal, Route 66, Temple of Anubis, Hollywood, Ilios", inline=True)
@@ -73,7 +73,9 @@ async def help(ctx):
     embed.add_field(name="$maps", value="View map pool for each weekend.", inline=True)
     embed.add_field(name="$standings", value="View current standings.", inline=True)
     embed.add_field(name="$upcoming", value="View this weekends matches / map pool", inline=True)
-    embed.add_field(name="$stats", value="Coming soon ;)", inline=True)
+    embed.add_field(name="$stats", value="View stats for specific player\n(ex: $stats Krusher99)", inline=True)
+    embed.add_field(name="$playtime", value="View hero playtime per team\n(ex: $playtime StacysMoms)\nUse 'all' to view playtime across entire league.", inline=False)
+    embed.add_field(name="$top10", value="View top 10 players for specific stat\n(ex: $top10 finalblows)", inline=True)
     embed.set_footer(text="More features are on the way!")
     await ctx.send(embed=embed)
 
@@ -96,15 +98,15 @@ async def schedule(ctx):
                                             4:00pm (login @ 3:45pm) - Finer Things Club vs. Everything Hurts\n\
                                             6:00pm (login @ 5:45pm) - Onibaku vs. Stacy's Moms\n\
                                             8:00pm (login @ 7:45pm) - Fewbisoft vs. Nerf Mei", inline=False)
-    embed.add_field(name="March 22nd, 2020", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Everything Hurts\n\
+    embed.add_field(name="March 29nd, 2020", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Everything Hurts\n\
                                             4:00pm (login @ 3:45pm) - Stacy's Moms vs. Game Hive\n\
                                             6:00pm (login @ 5:45pm) - Cronchers of Catan vs. Nerf Mei\n\
                                             8:00pm (login @ 7:45pm) - Onibaku vs. Finer Things Club", inline=False)
-    embed.add_field(name="March 29th, 2020", value="2:00pm (login @ 1:45pm) - Onibaku vs. Game Hive\n\
+    embed.add_field(name="April 5th, 2020", value="2:00pm (login @ 1:45pm) - Onibaku vs. Game Hive\n\
                                             4:00pm (login @ 3:45pm) - Nerf Mei vs. Everything Hurts\n\
                                             6:00pm (login @ 5:45pm) - Finer Things Club vs. Fewbisoft\n\
                                             8:00pm (login @ 7:45pm) - Cronchers of Catan vs. Stacy's Moms", inline=False)
-    embed.add_field(name="April 5th, 2020", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Stacy's Moms\n\
+    embed.add_field(name="April 19th, 2020", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Stacy's Moms\n\
                                             4:00pm (login @ 3:45pm) - Finer Things Club vs. Cronchers of Catan\n\
                                             6:00pm (login @ 5:45pm) - Nerf Mei vs. Onibaku\n\
                                             8:00pm (login @ 7:45pm) - Everything Hurts vs. Game Hive", inline=False)
@@ -253,7 +255,9 @@ async def playtime(ctx, team_name=None):
                     baptiste.time += elem[29]
                     sigma.time += elem[30]
 
-
+            if total_time == 0:
+                await ctx.send("Team '" + t.name + "' has yet to play.")
+                return
             embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
             for hero in all_heroes:
@@ -267,9 +271,53 @@ async def playtime(ctx, team_name=None):
     await ctx.send("Unable to find team with name: " + team_name + "\nRemember to omit spaces ('Stacy's Moms' -> 'Stacy'sMoms')")
 
 @client.command()
+async def top10(ctx, stat=None):
+    if stat is None:
+        await ctx.send("Missing argument: Desired Statistic\
+            \nChoose from any of the follow: eliminations, finalblows, deaths, damage, healing, ults, crouches\n(ex: '$top10 damage')")
+        return
+    
+    check = 0
+    if stat.lower() == "eliminations":
+        check = 0
+    elif stat.lower() == "finalblows":
+        check = 1
+    elif stat.lower() == "deaths":
+        check = 2
+    elif stat.lower() == "damage":
+        check = 3
+    elif stat.lower() == "healing":
+        check = 4
+    elif stat.lower() == "ults":
+        check = 7
+    elif stat.lower() == "crouches":
+        check = 8
+    else:
+        await ctx.send("Unable to understand argument: " + stat + "\nRemeber to omit spaces ('final blows' -> 'finalblows')")
+        return
+
+    for p in players:
+        p.sorting_stat = 0
+        for k in p.map_data.keys():
+                
+                #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
+            for elem in p.map_data[k]:
+                p.sorting_stat += float(elem[check])
+    
+    sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
+
+    embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week 1.", color=0xf3e91d)
+    embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
+    for i in range(10):
+        embed.add_field(name=str(i + 1) + ". " + sorted_players[i].name, value="Total: " + "{0:.0f}".format(sorted_players[i].sorting_stat), inline=True)          
+    embed.set_footer(text=last_updated)
+    await ctx.send(embed=embed)
+    return
+
+@client.command()
 async def stats(ctx, name=None):
     if name is None:
-        await ctx.send("Missing argument: Player Name\n(ex: '$stats_player Krusher99')")
+        await ctx.send("Missing argument: Player Name\n(ex: '$stats Krusher99')")
         return
 
     for p in players:
@@ -307,7 +355,6 @@ async def stats(ctx, name=None):
                     total_ults_used += int(elem[7])
                     total_crouches += int(elem[8])
             
-
 
             embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description=p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")

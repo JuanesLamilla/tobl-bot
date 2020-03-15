@@ -14,6 +14,7 @@ class player:
     team: team
     playtime: dict
     total_playtime: int
+    sorting_stat: int
 
     def __init__(self, name, team):
         self.name = name
@@ -21,6 +22,7 @@ class player:
         self.map_data = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []}
         self.playtime = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []}
         self.total_playtime = 0
+        self.sorting_stat = 0
 
 class map_round:
     map_name: str
