@@ -355,18 +355,39 @@ async def stats(ctx, name=None):
                     total_ults_used += int(elem[7])
                     total_crouches += int(elem[8])
             
+            if temp_minutes != 0:
+                elims_pt = "{0:.2f}".format(total_elims*(10/temp_minutes))
+                fb_pt = "{0:.2f}".format(total_final_blows*(10/temp_minutes))
+                deaths_pt = "{0:.2f}".format(total_deaths*(10/temp_minutes))
+                dmg_pt = "{0:.2f}".format(total_damage_dealt*(10/temp_minutes))
+                heal_pt = "{0:.2f}".format(total_healing_dealt*(10/temp_minutes))
+                dmgt_pt = "{0:.2f}".format(total_damage_taken*(10/temp_minutes))
+                healt_pt = "{0:.2f}".format(total_healing_taken*(10/temp_minutes))
+                ults_pt = "{0:.2f}".format(total_ults_used*(10/temp_minutes))
+                crouch_pt = "{0:.2f}".format(total_crouches*(10/temp_minutes))
+            else:
+                elims_pt = "0"
+                fb_pt = "0"
+                deaths_pt = "0"
+                dmg_pt = "0"
+                heal_pt = "0"
+                dmgt_pt = "0"
+                healt_pt = "0"
+                ults_pt = "0"
+                crouch_pt = "0"
+
 
             embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description=p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + "{0:.2f}".format(total_elims*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + "{0:.2f}".format(total_final_blows*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + "{0:.2f}".format(total_deaths*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Damage Dealt", value="Total: " + str(total_damage_dealt) + "\nAvg/10mins: " + "{0:.2f}".format(total_damage_dealt*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Healing Dealt", value="Total: " + str(total_healing_dealt) + "\nAvg/10mins: " + "{0:.2f}".format(total_healing_dealt*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Damage Received", value="Total: " + str(total_damage_taken) + "\nAvg/10mins: " + "{0:.2f}".format(total_damage_taken*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Healing Received", value="Total: " + str(total_healing_taken) + "\nAvg/10mins: " + "{0:.2f}".format(total_healing_taken*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + "{0:.2f}".format(total_ults_used*(10/temp_minutes)), inline=True)
-            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + "{0:.2f}".format(total_crouches*(10/temp_minutes)), inline=True)
+            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt, inline=True)
+            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt, inline=True)
+            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt, inline=True)
+            embed.add_field(name="Damage Dealt", value="Total: " + str(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt, inline=True)
+            embed.add_field(name="Healing Dealt", value="Total: " + str(total_healing_dealt) + "\nAvg/10mins: " + heal_pt, inline=True)
+            embed.add_field(name="Damage Received", value="Total: " + str(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt, inline=True)
+            embed.add_field(name="Healing Received", value="Total: " + str(total_healing_taken) + "\nAvg/10mins: " + healt_pt, inline=True)
+            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt, inline=True)
+            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt, inline=True)
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
             return
