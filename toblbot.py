@@ -10,6 +10,8 @@ players = []
 matches = []
 last_updated = "Last updated March 15th, 2020 at 12:13 am."
 
+print("HERE")
+
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
 
