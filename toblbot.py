@@ -208,6 +208,10 @@ async def playtime(ctx, team_name=None):
                     sigma.time += elem[30]
 
 
+        if total_time == 0:
+            await ctx.send("No team has played yet.")
+            return
+
         embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
         for hero in all_heroes:
@@ -258,6 +262,7 @@ async def playtime(ctx, team_name=None):
             if total_time == 0:
                 await ctx.send("Team '" + t.name + "' has yet to play.")
                 return
+
             embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
             for hero in all_heroes:
