@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated March 15th, 2020 at 12:13 am."
+last_updated = "Last updated March 15th, 2020 at 10:28 pm."
 
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
@@ -34,14 +34,14 @@ async def on_guild_join(guild):
 async def standings(ctx):
     embed=discord.Embed(title="Current Standings", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="1. Onibaku", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="2. Cronchers of Catan", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="3. Game Hive", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="4. Finer Things Club", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="5. Everything Hurts", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="6. Stacy's Moms", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="7. Fewbisoft", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
-    embed.add_field(name="8. Nerf Mei", value="W: 0 L: 0 D: 0 Diff: +0", inline=False)
+    embed.add_field(name="1. Everything Hurts", value="W: 3 L: 0 D: 0 Diff: +3", inline=False) # Wins: 1
+    embed.add_field(name="2. Onibaku", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
+    embed.add_field(name="2. Game Hive", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
+    embed.add_field(name="2. Fewbisoft", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
+    embed.add_field(name="5. Cronchers of Catan", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
+    embed.add_field(name="5. Stacy's Moms", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
+    embed.add_field(name="5. Nerf Mei", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
+    embed.add_field(name="7. Finer Things Club", value="W: 0 L: 3 D: 0 Diff: -3", inline=False) # Wins: 0
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
@@ -276,10 +276,10 @@ async def playtime(ctx, team_name=None):
     await ctx.send("Unable to find team with name: " + team_name + "\nRemember to omit spaces ('Stacy's Moms' -> 'Stacy'sMoms')")
 
 @client.command()
-async def top10(ctx, stat=None):
+async def top10(ctx, stat=None, pt=None):
     if stat is None:
         await ctx.send("Missing argument: Desired Statistic\
-            \nChoose from any of the follow: eliminations, finalblows, deaths, damage, healing, ults, crouches\n(ex: '$top10 damage')")
+            \nChoose from any of the follow: eliminations, finalblows, deaths, damage, healing, ults, crouches, damagereceived, healingreceived\n(ex: '$top10 damage')")
         return
     
     check = 0
@@ -293,25 +293,38 @@ async def top10(ctx, stat=None):
         check = 3
     elif stat.lower() == "healing":
         check = 4
+    elif stat.lower() == "damagereceived":
+        check = 5
+    elif stat.lower() == "healingreceived":
+        check = 6
     elif stat.lower() == "ults":
         check = 7
     elif stat.lower() == "crouches":
         check = 8
     else:
-        await ctx.send("Unable to understand argument: " + stat + "\nRemeber to omit spaces ('final blows' -> 'finalblows')")
+        await ctx.send("Unable to understand argument: " + stat + "\nRemember to omit spaces ('final blows' -> 'finalblows')")
         return
 
     for p in players:
         p.sorting_stat = 0
         for k in p.map_data.keys():
-                
+            
                 #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
             for elem in p.map_data[k]:
                 p.sorting_stat += float(elem[check])
+        
+        if pt is not None and pt.lower() == "per10" and p.total_playtime != 0:
+            p.sorting_stat = p.sorting_stat*(10/(p.total_playtime // 60))
+        elif pt is not None and pt.lower() == "per10":
+            p.sorting_stat = 0
+                
     
     sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
 
-    embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week 1.", color=0xf3e91d)
+    if pt is not None and pt.lower() == "per10":
+        embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for week 1.", color=0xf3e91d)
+    else:
+        embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week 1.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
     for i in range(10):
         embed.add_field(name=str(i + 1) + ". " + sorted_players[i].name, value="Total: " + "{0:.0f}".format(sorted_players[i].sorting_stat), inline=True)          
