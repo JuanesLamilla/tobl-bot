@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated March 15th, 2020 at 10:28 pm."
+last_updated = "Last updated March 20th, 2020 at 5:08 pm."
 
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
@@ -81,13 +81,14 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for March 15th", description="Games this upcoming weekend.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for March 29th", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value=" Lijiang Tower, King's Row, Volskaya Industries, Junkertown, Busan", inline=False)
-    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Cronchers of Catan vs. Game Hive\n\
-                                            4:00pm (login @ 3:45pm) - Finer Things Club vs. Everything Hurts\n\
-                                            6:00pm (login @ 5:45pm) - Onibaku vs. Stacy's Moms\n\
-                                            8:00pm (login @ 7:45pm) - Fewbisoft vs. Nerf Mei", inline=False)
+    embed.add_field(name="Maps", value="Dorado, Oasis, Hollywood, Temple of Anubis, Watchpoint: Gilbraltar", inline=False)
+    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Everything Hurts\n\
+                                            4:00pm (login @ 3:45pm) - Stacy's Moms vs. Game Hive\n\
+                                            6:00pm (login @ 5:45pm) - Cronchers of Catan vs. Nerf Mei\n\
+                                            8:00pm (login @ 7:45pm) - Onibaku vs. Finer Things Club", inline=False)
+    embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
 @client.command()
@@ -129,9 +130,6 @@ async def schedule(ctx):
 
 @client.command()
 async def playtime(ctx, team_name=None):
-    if team_name is None:
-        await ctx.send("Missing argument: Team Name\n(ex: '$team_playtime StacysMoms')")
-        return
 
     total_time = 0
     reaper = Hero("Reaper", "<:reaper:688453034317054051>")
@@ -170,7 +168,7 @@ async def playtime(ctx, team_name=None):
      mei, mercy, moira, orisa, pharah, reaper, reinhardt, roadhog, sigma, soldier, sombra, symmetra, torbjorn,
      tracer, widowmaker, winston, wrecking_ball, zarya, zenyatta]
     
-    if team_name.lower().replace("'", "") == "all":
+    if team_name is None or team_name.lower().replace("'", "") == "all":
         for t in teams:
             for k in t.playrate_data.keys():
                 for elem in t.playrate_data[k]:
@@ -214,66 +212,86 @@ async def playtime(ctx, team_name=None):
 
         embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
+
+        count = 0
+
         for hero in all_heroes:
             play_perc = (hero.time / total_time) * 100
-            if play_perc != 0:
+            if play_perc != 0 and count <= 24:
+                count += 1
                 embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
-        embed.set_footer(text=last_updated)
-        await ctx.send(embed=embed)
-        return
 
-    for t in teams:
-        if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
-            for k in t.playrate_data.keys():
-                for elem in t.playrate_data[k]:
-                    total_time += elem[31]
-                    reaper.time += elem[0]
-                    tracer.time += elem[1]
-                    mercy.time += elem[2]
-                    hanzo.time += elem[3]
-                    torbjorn.time += elem[4]
-                    reinhardt.time += elem[5]
-                    pharah.time += elem[6]
-                    winston.time += elem[7]
-                    widowmaker.time += elem[8]
-                    bastion.time += elem[9]
-                    symmetra.time += elem[10]
-                    zenyatta.time += elem[11]
-                    genji.time += elem[12]
-                    roadhog.time += elem[13]
-                    mccree.time += elem[14]
-                    junkrat.time += elem[15]
-                    zarya.time += elem[16]
-                    soldier.time += elem[17]
-                    lucio.time += elem[18]
-                    dva.time += elem[19]
-                    mei.time += elem[20]
-                    sombra.time += elem[21]
-                    doomfist.time += elem[22]
-                    ana.time += elem[23]
-                    orisa.time += elem[24]
-                    brigitte.time += elem[25]
-                    moira.time += elem[26]
-                    wrecking_ball.time += elem[27]
-                    ashe.time += elem[28]
-                    baptiste.time += elem[29]
-                    sigma.time += elem[30]
+            elif play_perc != 0 and count == 25:
+                count += 1
+                embed2=discord.Embed(color=0xf3e91d)
+                embed2.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+            
+            elif play_perc != 0 and count > 25:
+                count += 1
+                embed2.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
 
-            if total_time == 0:
-                await ctx.send("Team '" + t.name + "' has yet to play.")
-                return
-
-            embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
-            embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-            for hero in all_heroes:
-                play_perc = (hero.time / total_time) * 100
-                if play_perc != 0:
-                    embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+        if count < 25:
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
-            return
+
+        else:
+            embed2.set_footer(text=last_updated)
+            await ctx.send(embed=embed)
+            await ctx.send(embed=embed2)
+        return
+
+    # for t in teams:
+    #     if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
+    #         for k in t.playrate_data.keys():
+    #             for elem in t.playrate_data[k]:
+    #                 total_time += elem[31]
+    #                 reaper.time += elem[0]
+    #                 tracer.time += elem[1]
+    #                 mercy.time += elem[2]
+    #                 hanzo.time += elem[3]
+    #                 torbjorn.time += elem[4]
+    #                 reinhardt.time += elem[5]
+    #                 pharah.time += elem[6]
+    #                 winston.time += elem[7]
+    #                 widowmaker.time += elem[8]
+    #                 bastion.time += elem[9]
+    #                 symmetra.time += elem[10]
+    #                 zenyatta.time += elem[11]
+    #                 genji.time += elem[12]
+    #                 roadhog.time += elem[13]
+    #                 mccree.time += elem[14]
+    #                 junkrat.time += elem[15]
+    #                 zarya.time += elem[16]
+    #                 soldier.time += elem[17]
+    #                 lucio.time += elem[18]
+    #                 dva.time += elem[19]
+    #                 mei.time += elem[20]
+    #                 sombra.time += elem[21]
+    #                 doomfist.time += elem[22]
+    #                 ana.time += elem[23]
+    #                 orisa.time += elem[24]
+    #                 brigitte.time += elem[25]
+    #                 moira.time += elem[26]
+    #                 wrecking_ball.time += elem[27]
+    #                 ashe.time += elem[28]
+    #                 baptiste.time += elem[29]
+    #                 sigma.time += elem[30]
+
+    #         if total_time == 0:
+    #             await ctx.send("Team '" + t.name + "' has yet to play.")
+    #             return
+
+    #         embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+    #         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
+    #         for hero in all_heroes:
+    #             play_perc = (hero.time / total_time) * 100
+    #             if play_perc != 0:
+    #                 embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+    #         embed.set_footer(text=last_updated)
+    #         await ctx.send(embed=embed)
+    #         return
     
-    await ctx.send("Unable to find team with name: " + team_name + "\nRemember to omit spaces ('Stacy's Moms' -> 'Stacy'sMoms')")
+    await ctx.send("Team specific playtime stats currently disabled. Try $playtime to see playtime stats across the whole league.")
 
 @client.command()
 async def top10(ctx, stat=None, pt=None):
@@ -287,7 +305,7 @@ async def top10(ctx, stat=None, pt=None):
         check = 0
     elif stat.lower() == "finalblows":
         check = 1
-    elif stat.lower() == "deaths":
+    elif stat.lower() == "deaths" or stat.lower() == "leastdeaths":
         check = 2
     elif stat.lower() == "damage":
         check = 3
@@ -306,20 +324,30 @@ async def top10(ctx, stat=None, pt=None):
         return
 
     for p in players:
+        
         p.sorting_stat = 0
+        
         for k in p.map_data.keys():
             
                 #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
             for elem in p.map_data[k]:
                 p.sorting_stat += float(elem[check])
         
-        if pt is not None and pt.lower() == "per10" and p.total_playtime != 0:
+        if pt is not None and pt.lower() == "per10" and p.total_playtime >= 600:
             p.sorting_stat = p.sorting_stat*(10/(p.total_playtime // 60))
+        elif pt is not None and pt.lower() == "per10" and stat.lower() == "leastdeaths":
+            p.sorting_stat = 999999
         elif pt is not None and pt.lower() == "per10":
             p.sorting_stat = 0
+
+        if p.total_playtime < 600 and stat.lower() == "leastdeaths":
+            p.sorting_stat = 999999
+
                 
-    
-    sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
+    if stat.lower() == "leastdeaths":
+        sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=False)
+    else:
+        sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
 
     if pt is not None and pt.lower() == "per10":
         embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for week 1.", color=0xf3e91d)
@@ -327,8 +355,12 @@ async def top10(ctx, stat=None, pt=None):
         embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week 1.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
     for i in range(10):
-        embed.add_field(name=str(i + 1) + ". " + sorted_players[i].name, value="Total: " + "{0:.0f}".format(sorted_players[i].sorting_stat), inline=True)          
-    embed.set_footer(text=last_updated)
+        if (pt is not None and pt.lower() == "per10") or stat.lower() == "damage" or stat.lower() == "healing" or stat.lower() == "healingreceived" or stat.lower() == "damagereceived": 
+            embed.add_field(name=str(i + 1) + ". " + sorted_players[i].name, value="Total: " + "{0:.2f}".format(sorted_players[i].sorting_stat), inline=True)
+        else:
+            embed.add_field(name=str(i + 1) + ". " + sorted_players[i].name, value="Total: " + "{0:.0f}".format(sorted_players[i].sorting_stat), inline=True)
+                     
+    embed.set_footer(text="Player must have played at least 10 minutes to appear here.\n" + last_updated)
     await ctx.send(embed=embed)
     return
 
@@ -400,10 +432,10 @@ async def stats(ctx, name=None):
             embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt, inline=True)
             embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt, inline=True)
             embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt, inline=True)
-            embed.add_field(name="Damage Dealt", value="Total: " + str(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt, inline=True)
-            embed.add_field(name="Healing Dealt", value="Total: " + str(total_healing_dealt) + "\nAvg/10mins: " + heal_pt, inline=True)
-            embed.add_field(name="Damage Received", value="Total: " + str(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt, inline=True)
-            embed.add_field(name="Healing Received", value="Total: " + str(total_healing_taken) + "\nAvg/10mins: " + healt_pt, inline=True)
+            embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt, inline=True)
+            embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt, inline=True)
+            embed.add_field(name="Damage Received", value="Total: " + "{0:.2f}".format(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt, inline=True)
+            embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt, inline=True)
             embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt, inline=True)
             embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt, inline=True)
             embed.set_footer(text=last_updated)
