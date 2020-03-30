@@ -84,13 +84,13 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for March 29th", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for April 5th", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="Dorado, Oasis, Hollywood, Temple of Anubis, Watchpoint: Gilbraltar", inline=False)
-    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Fewbisoft vs. Everything Hurts\n\
-                                            4:00pm (login @ 3:45pm) - Stacy's Moms vs. Game Hive\n\
-                                            6:00pm (login @ 5:45pm) - Cronchers of Catan vs. Nerf Mei\n\
-                                            8:00pm (login @ 7:45pm) - Onibaku vs. Finer Things Club", inline=False)
+    embed.add_field(name="Maps", value="Eichenwalde, Horizon Lunar Colony, Nepal, Numbani, Route 66", inline=False)
+    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Onibaku vs. Game Hive\n\
+                                            4:00pm (login @ 3:45pm) - Nerf Mei vs. Everything Hurts\n\
+                                            6:00pm (login @ 5:45pm) - Finer Things Club vs. Fewbisoft\n\
+                                            8:00pm (login @ 7:45pm) - Cronchers of Catan vs. Stacy's Moms", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
