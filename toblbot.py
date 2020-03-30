@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated March 20th, 2020 at 5:08 pm."
+last_updated = "Last updated March 29th, 2020 at 10:55 pm."
 
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
@@ -34,14 +34,17 @@ async def on_guild_join(guild):
 async def standings(ctx):
     embed=discord.Embed(title="Current Standings", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="1. Everything Hurts", value="W: 3 L: 0 D: 0 Diff: +3", inline=False) # Wins: 1
-    embed.add_field(name="2. Onibaku", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
-    embed.add_field(name="2. Game Hive", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
-    embed.add_field(name="2. Fewbisoft", value="W: 3 L: 1 D: 0 Diff: +2", inline=False) # Wins: 1
-    embed.add_field(name="5. Cronchers of Catan", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
-    embed.add_field(name="5. Stacy's Moms", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
-    embed.add_field(name="5. Nerf Mei", value="W: 1 L: 3 D: 0 Diff: -2", inline=False) # Wins: 0
-    embed.add_field(name="7. Finer Things Club", value="W: 0 L: 3 D: 0 Diff: -3", inline=False) # Wins: 0
+    embed.add_field(name="1. Game Hive", value="W: 6 L: 1 Diff: +5", inline=False) # Wins: 2
+    embed.add_field(name="2. Fewbisoft", value="W: 6 L: 2 Diff: +4", inline=False) # Wins: 2
+
+    embed.add_field(name="3. Everything Hurts", value="W: 4 L: 3 Diff: +1", inline=False) # Wins: 1
+    embed.add_field(name="4. Onibaku", value="W: 4 L: 4 Diff: +0", inline=False) # Wins: 1
+    embed.add_field(name="4. Cronchers of Catan", value="W: 4 L: 4 Diff: +0", inline=False) # Wins: 1
+    embed.add_field(name="6. Finer Things Club", value="W: 3 L: 4 Diff: -1", inline=False) # Wins: 1
+
+    embed.add_field(name="7. Nerf Mei", value="W: 2 L: 6 Diff: -4", inline=False) # Wins: 0
+    embed.add_field(name="8. Stacy's Moms", value="W: 1 L: 6 Diff: -5", inline=False) # Wins: 0
+
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
@@ -210,7 +213,7 @@ async def playtime(ctx, team_name=None):
             await ctx.send("No team has played yet.")
             return
 
-        embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for all weeks.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
         count = 0
@@ -350,9 +353,9 @@ async def top10(ctx, stat=None, pt=None):
         sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
 
     if pt is not None and pt.lower() == "per10":
-        embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for week 1.", color=0xf3e91d)
+        embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for all weeks.", color=0xf3e91d)
     else:
-        embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week 1.", color=0xf3e91d)
+        embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for all weeks.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
     for i in range(10):
         if (pt is not None and pt.lower() == "per10") or stat.lower() == "damage" or stat.lower() == "healing" or stat.lower() == "healingreceived" or stat.lower() == "damagereceived": 
