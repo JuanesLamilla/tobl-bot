@@ -366,6 +366,7 @@ async def top10(ctx, stat=None, pt=None):
     await ctx.send(embed=embed)
     return
 
+
 @client.command()
 async def stats(ctx, name=None):
     if name is None:
@@ -431,20 +432,71 @@ async def stats(ctx, name=None):
 
             embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description=p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt, inline=True)
-            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt, inline=True)
-            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt, inline=True)
-            embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt, inline=True)
-            embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt, inline=True)
-            embed.add_field(name="Damage Received", value="Total: " + "{0:.2f}".format(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt, inline=True)
-            embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt, inline=True)
-            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt, inline=True)
-            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt, inline=True)
+
+            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt + " (#" + str(rank_eliminations.index(p) + 1) + ")", inline=True)
+
+            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt + " (#" + str(rank_eliminations.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt + " (#" + str(rank_deaths.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt + " (#" + str(rank_damage.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt + " (#" + str(rank_healing.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Damage Received", value="Total: " + "{0:.2f}".format(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt + " (#" + str(rank_damagereceived.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt + " (#" + str(rank_healingreceived.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt + " (#" + str(rank_ults.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt + " (#" + str(rank_crouches.index(p) + 1) + ")", inline=True)
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
             return
     
     await ctx.send("Unable to find player with name: " + name)
+
+def ranking_maker(stat, pt="per10"):
+    check = 0
+    if stat.lower() == "eliminations":
+        check = 0
+    elif stat.lower() == "finalblows":
+        check = 1
+    elif stat.lower() == "deaths" or stat.lower() == "leastdeaths":
+        check = 2
+    elif stat.lower() == "damage":
+        check = 3
+    elif stat.lower() == "healing":
+        check = 4
+    elif stat.lower() == "damagereceived":
+        check = 5
+    elif stat.lower() == "healingreceived":
+        check = 6
+    elif stat.lower() == "ults":
+        check = 7
+    elif stat.lower() == "crouches":
+        check = 8
+
+    for p in players:
+        
+        p.sorting_stat = 0
+        
+        for k in p.map_data.keys():
+            
+                #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
+            for elem in p.map_data[k]:
+                p.sorting_stat += float(elem[check])
+        
+        if pt is not None and pt.lower() == "per10" and p.total_playtime >= 600:
+            p.sorting_stat = p.sorting_stat*(10/(p.total_playtime // 60))
+        elif pt is not None and pt.lower() == "per10" and stat.lower() == "leastdeaths":
+            p.sorting_stat = 999999
+        elif pt is not None and pt.lower() == "per10":
+            p.sorting_stat = 0
+
+        if p.total_playtime < 600 and stat.lower() == "leastdeaths":
+            p.sorting_stat = 999999
+
+                
+    if stat.lower() == "leastdeaths":
+        sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=False)
+    else:
+        sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
+    
+    return sorted_players
 
 def scan_data():
     with open(str(pathlib.Path(__file__).parent.absolute()) + "\\teams.txt", 'r') as csv_file:
@@ -511,4 +563,20 @@ def scan_data():
                 matches.append(match_save)
 
 scan_data()
+
+rank_eliminations = ranking_maker("eliminations")
+rank_finalblows = ranking_maker("finalblows")
+rank_deaths = ranking_maker("deaths")
+rank_damage = ranking_maker("damage")
+rank_healing = ranking_maker("healing")
+rank_damagereceived = ranking_maker("damagereceived")
+rank_healingreceived = ranking_maker("healingreceived")
+rank_ults = ranking_maker("ults")
+rank_crouches = ranking_maker("crouches")
+
 client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8')
+
+
+
+
+
