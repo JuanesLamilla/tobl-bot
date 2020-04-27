@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated April 20th, 2020 at 6:48 pm."
+last_updated = "Last updated April 27th, 2020 at 12:15 am."
 
 client = commands.Bot(command_prefix = '$')
 client.remove_command('help')
@@ -35,14 +35,15 @@ async def standings(ctx):
     embed=discord.Embed(title="Current Standings", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
-    embed.add_field(name="1. Game Hive", value="W: 12 L: 2 Diff: +10", inline=False) # Wins: 4
-    embed.add_field(name="2. Fewbisoft", value="W: 12 L: 5 Diff: +7", inline=False) # Wins: 4
-    embed.add_field(name="3. Onibaku", value="W: 8 L: 8 Diff: +0", inline=False) # Wins: 2
-    embed.add_field(name="4. Everything Hurts", value="W: 7 L: 8 Diff: -1", inline=False) # Wins: 2
-    embed.add_field(name="4. Cronchers of Catan", value="W: 7 L: 8 Diff: -1", inline=False) # Wins: 2
-    embed.add_field(name="6. Stacy's Moms", value="W: 6 L: 9 Diff: -3", inline=False) # Wins: 1
-    embed.add_field(name="7. Finer Things Club", value="W: 5 L: 10 Diff: -5", inline=False) # Wins: 1
-    embed.add_field(name="8. Nerf Mei", value="W: 5 L: 12 Diff: -7", inline=False) # Wins: 0
+
+    embed.add_field(name="1. Game Hive", value="W: 15 L: 2 Diff: +13", inline=False) # Wins: 5
+    embed.add_field(name="2. Fewbisoft", value="W: 15 L: 5 Diff: +10", inline=False) # Wins: 5
+    embed.add_field(name="3. Everything Hurts", value="W: 10 L: 10 Diff: +0", inline=False) # Wins: 3
+    embed.add_field(name="4. Stacy's Moms", value="W: 9 L: 10 Diff: -1", inline=False) # Wins: 2
+    embed.add_field(name="4. Onibaku", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 2
+    embed.add_field(name="6. Cronchers of Catan", value="W: 7 L: 11 Diff: -4", inline=False) # Wins: 2
+    embed.add_field(name="7. Finer Things Club", value="W: 6 L: 13 Diff: -7", inline=False) # Wins: 1
+    embed.add_field(name="8. Nerf Mei", value="W: 5 L: 15 Diff: -10", inline=False) # Wins: 0
 
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
@@ -83,13 +84,13 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for April 26th", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for May 3rd", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="Rialto, Blizzard World, Busan, Paris, Dorado", inline=False)
-    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Everything Hurts vs. Onibaku\n\
-                                            4:00pm (login @ 3:45pm) - Game Hive vs. Nerf Mei\n\
-                                            6:00pm (login @ 5:45pm) - Fewbisoft vs. Cronchers of Catan\n\
-                                            8:00pm (login @ 7:45pm) - Finer Things Club vs. Stacy's Moms", inline=False)
+    embed.add_field(name="Maps", value="Numbani, Volskaya Industries, Watchpoint: Gilbraltar, Eichenwalde, Oasis", inline=False)
+    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Finer Things Club vs. Nerf Mei\n\
+                                            4:00pm (login @ 3:45pm) - Cronchers of Catan vs. Onibaku\n\
+                                            6:00pm (login @ 5:45pm) - Stacy's Moms vs. Everything Hurts\n\
+                                            8:00pm (login @ 7:45pm) - Fewbisoft vs. Game Hive", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
@@ -435,7 +436,7 @@ async def stats(ctx, name=None):
 
             embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt + " (#" + str(rank_eliminations.index(p) + 1) + ")", inline=True)
 
-            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt + " (#" + str(rank_eliminations.index(p) + 1) + ")", inline=True)
+            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt + " (#" + str(rank_finalblows.index(p) + 1) + ")", inline=True)
             embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt + " (#" + str(rank_deaths.index(p) + 1) + ")", inline=True)
             embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt + " (#" + str(rank_damage.index(p) + 1) + ")", inline=True)
             embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt + " (#" + str(rank_healing.index(p) + 1) + ")", inline=True)
