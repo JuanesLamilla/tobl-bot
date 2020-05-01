@@ -10,7 +10,7 @@ players = []
 matches = []
 last_updated = "Last updated April 27th, 2020 at 12:15 am."
 
-client = commands.Bot(command_prefix = '$')
+client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
 
 @client.event
@@ -132,7 +132,10 @@ async def schedule(ctx):
     await ctx.send(embed=embed)
 
 @client.command()
-async def playtime(ctx, team_name=None):
+async def playtime(ctx, team_name=None, start=None, end=None):
+
+    if not start is None and end is None:
+        end = start
 
     total_time = 0
     reaper = Hero("Reaper", "<:reaper:688453034317054051>")
@@ -174,6 +177,8 @@ async def playtime(ctx, team_name=None):
     if team_name is None or team_name.lower().replace("'", "") == "all":
         for t in teams:
             for k in t.playrate_data.keys():
+                if not end is None and (k > int(end) or k < int(start)):
+                        continue
                 for elem in t.playrate_data[k]:
                     total_time += elem[31]
                     reaper.time += elem[0]
@@ -210,10 +215,16 @@ async def playtime(ctx, team_name=None):
 
 
         if total_time == 0:
-            await ctx.send("No team has played yet.")
+            await ctx.send("No playtime recorded for the requested weeks.")
             return
 
-        embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for all weeks.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        if end is None:
+            embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for all weeks.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        elif end == start:
+            embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for week " + start + ".\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        else:
+            embed=discord.Embed(title="Hero playtime for all teams", description="Showing hero playtime for weeks " + start + " to " + end + "." + "\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+
         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
         count = 0
@@ -243,58 +254,96 @@ async def playtime(ctx, team_name=None):
             await ctx.send(embed=embed2)
         return
 
-    # for t in teams:
-    #     if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
-    #         for k in t.playrate_data.keys():
-    #             for elem in t.playrate_data[k]:
-    #                 total_time += elem[31]
-    #                 reaper.time += elem[0]
-    #                 tracer.time += elem[1]
-    #                 mercy.time += elem[2]
-    #                 hanzo.time += elem[3]
-    #                 torbjorn.time += elem[4]
-    #                 reinhardt.time += elem[5]
-    #                 pharah.time += elem[6]
-    #                 winston.time += elem[7]
-    #                 widowmaker.time += elem[8]
-    #                 bastion.time += elem[9]
-    #                 symmetra.time += elem[10]
-    #                 zenyatta.time += elem[11]
-    #                 genji.time += elem[12]
-    #                 roadhog.time += elem[13]
-    #                 mccree.time += elem[14]
-    #                 junkrat.time += elem[15]
-    #                 zarya.time += elem[16]
-    #                 soldier.time += elem[17]
-    #                 lucio.time += elem[18]
-    #                 dva.time += elem[19]
-    #                 mei.time += elem[20]
-    #                 sombra.time += elem[21]
-    #                 doomfist.time += elem[22]
-    #                 ana.time += elem[23]
-    #                 orisa.time += elem[24]
-    #                 brigitte.time += elem[25]
-    #                 moira.time += elem[26]
-    #                 wrecking_ball.time += elem[27]
-    #                 ashe.time += elem[28]
-    #                 baptiste.time += elem[29]
-    #                 sigma.time += elem[30]
+    else:
+        flip = True
 
-    #         if total_time == 0:
-    #             await ctx.send("Team '" + t.name + "' has yet to play.")
-    #             return
+        for t in teams:
+            if team_name.lower().replace("'", "") == t.name.lower().replace("'", "").replace(" ", ""):
+                current_team_name = t.name
+                flip = False
+                for k in t.playrate_data.keys():
+                    if not end is None and (k > int(end) or k < int(start)):
+                        continue
+                    for elem in t.playrate_data[k]:
+                        total_time += elem[31]
+                        reaper.time += elem[0]
+                        tracer.time += elem[1]
+                        mercy.time += elem[2]
+                        hanzo.time += elem[3]
+                        torbjorn.time += elem[4]
+                        reinhardt.time += elem[5]
+                        pharah.time += elem[6]
+                        winston.time += elem[7]
+                        widowmaker.time += elem[8]
+                        bastion.time += elem[9]
+                        symmetra.time += elem[10]
+                        zenyatta.time += elem[11]
+                        genji.time += elem[12]
+                        roadhog.time += elem[13]
+                        mccree.time += elem[14]
+                        junkrat.time += elem[15]
+                        zarya.time += elem[16]
+                        soldier.time += elem[17]
+                        lucio.time += elem[18]
+                        dva.time += elem[19]
+                        mei.time += elem[20]
+                        sombra.time += elem[21]
+                        doomfist.time += elem[22]
+                        ana.time += elem[23]
+                        orisa.time += elem[24]
+                        brigitte.time += elem[25]
+                        moira.time += elem[26]
+                        wrecking_ball.time += elem[27]
+                        ashe.time += elem[28]
+                        baptiste.time += elem[29]
+                        sigma.time += elem[30]
 
-    #         embed=discord.Embed(title="Hero playtime for " + t.name, description="Showing hero playtime for week 1.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
-    #         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    #         for hero in all_heroes:
-    #             play_perc = (hero.time / total_time) * 100
-    #             if play_perc != 0:
-    #                 embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
-    #         embed.set_footer(text=last_updated)
-    #         await ctx.send(embed=embed)
-    #         return
-    
-    await ctx.send("Team specific playtime stats currently disabled. Try $playtime to see playtime stats across the whole league.")
+
+        if flip:
+            await ctx.send("Unable to find team with name '" + team_name + "'. Remember to omit spaces ('Stacys Moms' -> 'StacysMoms')")
+            return
+
+        if total_time == 0:
+            await ctx.send("No playtime recorded for the requested team at the requested weeks.")
+            return
+
+        if end is None:
+            embed=discord.Embed(title="Hero playtime for " + current_team_name, description="Showing hero playtime for all weeks.\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        elif end == start:
+            embed=discord.Embed(title="Hero playtime for " + current_team_name, description="Showing hero playtime for week " + start + ".\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)
+        else:
+            embed=discord.Embed(title="Hero playtime for " + current_team_name, description="Showing hero playtime for weeks " + start + " to " + end + "." + "\nAny heroes not shown have received 0 playtime.", color=0xf3e91d)        
+        
+        embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
+
+        count = 0
+
+        for hero in all_heroes:
+            play_perc = (hero.time / total_time) * 100
+            if play_perc != 0 and count <= 24:
+                count += 1
+                embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+
+            elif play_perc != 0 and count == 25:
+                count += 1
+                embed2=discord.Embed(color=0xf3e91d)
+                embed2.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+            
+            elif play_perc != 0 and count > 25:
+                count += 1
+                embed2.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
+
+        if count <= 25:
+            embed.set_footer(text=last_updated)
+            await ctx.send(embed=embed)
+
+        else:
+            embed2.set_footer(text=last_updated)
+            await ctx.send(embed=embed)
+            await ctx.send(embed=embed2)
+        return
+
+    await ctx.send("Idk what happened for us to reach this point....")
 
 @client.command()
 async def top10(ctx, stat=None, pt=None):
@@ -369,17 +418,21 @@ async def top10(ctx, stat=None, pt=None):
 
 
 @client.command()
-async def stats(ctx, name=None):
+async def stats(ctx, name=None, start=None, end=None):
     if name is None:
         await ctx.send("Missing argument: Player Name\n(ex: '$stats Krusher99')")
         return
 
+    if not start is None and end is None:
+        end = start
+
     for p in players:
         if p.name.lower() == name.lower():
             #Time Played
-            temp_minutes = p.total_playtime // 60
-            hours = str(temp_minutes // 60)
-            minutes = str(temp_minutes % 60)
+            # temp_minutes = p.total_playtime // 60
+            # hours = str(temp_minutes // 60)
+            # minutes = str(temp_minutes % 60)
+            sum_time = 0
 
             total_maps = 0
             total_elims = 0
@@ -392,10 +445,16 @@ async def stats(ctx, name=None):
             total_ults_used = 0
             total_crouches = 0
             for k in p.map_data.keys():
+
+                if not end is None and (k > int(end) or k < int(start)):
+                    continue
                            
                 #Maps Played
                 if p.map_data[k] != []:
                     total_maps += len(p.map_data[k])
+                
+                for elem in p.playtime[k]:
+                    sum_time += elem
                 
                 #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
                 for elem in p.map_data[k]:
@@ -408,7 +467,11 @@ async def stats(ctx, name=None):
                     total_healing_taken += float(elem[6])
                     total_ults_used += int(elem[7])
                     total_crouches += int(elem[8])
-            
+
+            temp_minutes = sum_time // 60
+            hours = str(temp_minutes // 60)
+            minutes = str(temp_minutes % 60)
+
             if temp_minutes != 0:
                 elims_pt = "{0:.2f}".format(total_elims*(10/temp_minutes))
                 fb_pt = "{0:.2f}".format(total_final_blows*(10/temp_minutes))
@@ -431,19 +494,48 @@ async def stats(ctx, name=None):
                 crouch_pt = "0"
 
 
-            embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description=p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
+            if end is None:
+                embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description="Showing stats for all weeks.\n" + p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
+            elif end == start:
+                embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description="Showing stats for week " + start + ".\n" + p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
+            else:
+                embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description="Showing stats for weeks " + start + " to " + end + ".\n" + p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
+        
+
+
+            #embed=discord.Embed(title="Stats for " + p.name + " (" + p.team.name + ")", description=p.name + " has played for a total of " + hours + " hours and " + minutes + " minutes across " + str(total_maps) + " map(s).", color=0xf3e91d)
             embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
-            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt + " (#" + str(rank_eliminations.index(p) + 1) + ")", inline=True)
+            str_elims = ""
+            str_fb = ""
+            str_deaths = ""
+            str_damage = ""
+            str_heal = ""
+            str_dmgt = ""
+            str_healt = ""
+            str_ults = ""
+            str_crouches = ""
 
-            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt + " (#" + str(rank_finalblows.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt + " (#" + str(rank_deaths.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt + " (#" + str(rank_damage.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt + " (#" + str(rank_healing.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Damage Received", value="Total: " + "{0:.2f}".format(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt + " (#" + str(rank_damagereceived.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt + " (#" + str(rank_healingreceived.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt + " (#" + str(rank_ults.index(p) + 1) + ")", inline=True)
-            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt + " (#" + str(rank_crouches.index(p) + 1) + ")", inline=True)
+            if start is None:
+                str_elims = " (#" + str(rank_eliminations.index(p) + 1) + ")"
+                str_fb = " (#" + str(rank_finalblows.index(p) + 1) + ")"
+                str_deaths = " (#" + str(rank_deaths.index(p) + 1) + ")"
+                str_damage = " (#" + str(rank_damage.index(p) + 1) + ")"
+                str_heal = " (#" + str(rank_healing.index(p) + 1) + ")"
+                str_dmgt = " (#" + str(rank_damagereceived.index(p) + 1) + ")"
+                str_healt = " (#" + str(rank_healingreceived.index(p) + 1) + ")"
+                str_ults = " (#" + str(rank_ults.index(p) + 1) + ")"
+                str_crouches = " (#" + str(rank_crouches.index(p) + 1) + ")"
+
+            embed.add_field(name="Eliminations", value="Total: " + str(total_elims) + "\nAvg/10mins: " + elims_pt + str_elims, inline=True)
+            embed.add_field(name="Final Blows", value="Total: " + str(total_final_blows) + "\nAvg/10mins: " + fb_pt + str_fb, inline=True)
+            embed.add_field(name="Deaths", value="Total: " + str(total_deaths) + "\nAvg/10mins: " + deaths_pt + str_deaths, inline=True)
+            embed.add_field(name="Damage Dealt", value="Total: " + "{0:.2f}".format(total_damage_dealt) + "\nAvg/10mins: " + dmg_pt + str_damage, inline=True)
+            embed.add_field(name="Healing Dealt", value="Total: " + "{0:.2f}".format(total_healing_dealt) + "\nAvg/10mins: " + heal_pt + str_heal, inline=True)
+            embed.add_field(name="Damage Received", value="Total: " + "{0:.2f}".format(total_damage_taken) + "\nAvg/10mins: " + dmgt_pt + str_dmgt, inline=True)
+            embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt + str_healt, inline=True)
+            embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt + str_ults, inline=True)
+            embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt + str_crouches, inline=True)
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
             return
@@ -500,7 +592,7 @@ def ranking_maker(stat, pt="per10"):
     return sorted_players
 
 def scan_data():
-    with open(str(pathlib.Path(__file__).parent.absolute()) + "\\teams.txt", 'r') as csv_file:
+    with open(str(pathlib.Path(__file__).parent.absolute()) + "/teams.txt", 'r') as csv_file:
         csv_reader = csv.reader(csv_file, skipinitialspace=True, delimiter=',')
         for row in csv_reader:
             curr_team = team(row[0])
@@ -511,7 +603,7 @@ def scan_data():
             teams.append(curr_team)
 
 
-    with open(str(pathlib.Path(__file__).parent.absolute()) + "\\stats.txt", 'r') as csv_file:
+    with open(str(pathlib.Path(__file__).parent.absolute()) + "/stats.txt", 'r') as csv_file:
         csv_reader = csv.reader(csv_file, skipinitialspace=True, delimiter=',')
         for row in csv_reader:
 
@@ -543,25 +635,44 @@ def scan_data():
                             y.playtime[match_save.week].append(int(row[17]))
                             y.total_playtime += int(row[17])
                     
+                for y in players:
+                    if y.name == row[0] and y.team == match_save.teams[0]:
 
-                temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
-                while len(temp_playtime) < 31:
-                    temp_playtime.append(0)
-                temp_playtime.append(int(row[17]))
-                current_round.hero_playtime_1 = temp_playtime
-                match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
+                        temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
+                        while len(temp_playtime) < 31:
+                            temp_playtime.append(0)
+                        temp_playtime.append(int(row[17]))
+                        current_round.hero_playtime_1 = temp_playtime
+                        match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
 
-                temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
-                while len(temp_playtime) < 31:
-                    temp_playtime.append(0)
-                temp_playtime.append(int(row[17]))
-                current_round.hero_playtime_2 = temp_playtime
-                match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
+                        temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
+                        while len(temp_playtime) < 31:
+                            temp_playtime.append(0)
+                        temp_playtime.append(int(row[17]))
+                        current_round.hero_playtime_2 = temp_playtime
+                        match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
+
+                    elif y.name == row[6] and y.team == match_save.teams[0]:
+
+                        temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
+                        while len(temp_playtime) < 31:
+                            temp_playtime.append(0)
+                        temp_playtime.append(int(row[17]))
+                        current_round.hero_playtime_1 = temp_playtime
+                        match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
+
+                        temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
+                        while len(temp_playtime) < 31:
+                            temp_playtime.append(0)
+                        temp_playtime.append(int(row[17]))
+                        current_round.hero_playtime_2 = temp_playtime
+                        match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
 
                 current_round.map_time = int(row[17])
 
                 match_save.maps.append(current_round)
                 matches.append(match_save)
+
 
 scan_data()
 
@@ -575,8 +686,9 @@ rank_healingreceived = ranking_maker("healingreceived")
 rank_ults = ranking_maker("ults")
 rank_crouches = ranking_maker("crouches")
 
-client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8')
 
+client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
+#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
