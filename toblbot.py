@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated May 3rd, 2020 at 9:52 pm."
+last_updated = "Last updated May 5th, 2020 at 2:29 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
@@ -42,8 +42,9 @@ async def standings(ctx):
 
     embed.add_field(name="4. Cronchers of Catan", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 3
 
-    embed.add_field(name="5. Onibaku", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 2
-    embed.add_field(name="6. Stacy's Moms", value="W: 10 L: 13 Diff: -3", inline=False) # Wins: 2
+    embed.add_field(name="5. Stacy's Moms", value="W: 10 L: 13 Diff: -3", inline=False) # Wins: 2
+    embed.add_field(name="6. Onibaku", value="W: 10 L: 14 Diff: -4", inline=False) # Wins: 2
+
 
     embed.add_field(name="7. Finer Things Club", value="W: 8 L: 16 Diff: -8", inline=False) # Wins: 1
     embed.add_field(name="8. Nerf Mei", value="W: 8 L: 17 Diff: -9", inline=False) # Wins: 1
@@ -141,6 +142,8 @@ async def playtime(ctx, team_name=None, start=None, end=None):
         end = start
 
     total_time = 0
+    echo_total_time = 0
+    sigma_total_time = 0
     reaper = Hero("Reaper", "<:reaper:688453034317054051>")
     tracer = Hero("Tracer", "<:tracer:688453036506480726>")
     mercy = Hero("Mercy", "<:mercy:688453037001408534>")
@@ -170,19 +173,25 @@ async def playtime(ctx, team_name=None, start=None, end=None):
     moira = Hero("Moira", "<:moira:688453037152403486>")
     wrecking_ball = Hero("Wrecking Ball", "<:wrecking_ball:688453035072290816>")
     ashe = Hero("Ashe", "<:ashe:688453030324338782>")
+    echo = Hero("Echo", "<:echo:706705092253974530>")
+    echo.is_echo = True
     baptiste = Hero("Baptiste", "<:baptiste:688453019351908590>")
     sigma = Hero("Sigma", "<:sigma:688453035470356480>")
 
-    all_heroes = [ana, ashe, baptiste, bastion, brigitte, dva, doomfist, genji, hanzo, junkrat, lucio, mccree,
+    all_heroes = [ana, ashe, baptiste, bastion, brigitte, dva, doomfist, echo, genji, hanzo, junkrat, lucio, mccree,
      mei, mercy, moira, orisa, pharah, reaper, reinhardt, roadhog, sigma, soldier, sombra, symmetra, torbjorn,
      tracer, widowmaker, winston, wrecking_ball, zarya, zenyatta]
     
     if team_name is None or team_name.lower().replace("'", "") == "all":
         for t in teams:
+
             for k in t.playrate_data.keys():
                 if not end is None and (k > int(end) or k < int(start)):
-                        continue
-                for elem in t.playrate_data[k]:
+                        continue    
+                
+                
+                for elem in t.playrate_data[k]:   
+
                     total_time += elem[31]
                     reaper.time += elem[0]
                     tracer.time += elem[1]
@@ -213,9 +222,18 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                     moira.time += elem[26]
                     wrecking_ball.time += elem[27]
                     ashe.time += elem[28]
-                    baptiste.time += elem[29]
-                    sigma.time += elem[30]
 
+                    if k <= 3:
+                        baptiste.time += elem[29]
+                        sigma.time += elem[30]
+                        sigma_total_time += elem[31]
+
+                    else:
+                        echo.time += elem[29]
+                        baptiste.time += elem[30]
+
+                    if k >= 5:
+                        echo_total_time += elem[31]  
 
         if total_time == 0:
             await ctx.send("No playtime recorded for the requested weeks.")
@@ -235,8 +253,54 @@ async def playtime(ctx, team_name=None, start=None, end=None):
         all_heroes = sorted(all_heroes, key=lambda x: x.time, reverse=True)
 
 
+        if echo_total_time == 0:
+            echo_play_perc = 0
+        else:
+            echo_play_perc = (echo.time / echo_total_time) * 100
+        if sigma_total_time == 0:
+            sigma_play_perc = 0
+        else:
+            sigma_play_perc = (sigma.time / sigma_total_time) * 100
+
+        previous = 100
+
         for hero in all_heroes:
             play_perc = (hero.time / total_time) * 100
+
+            if hero.name == "Echo" or hero.name == "Sigma":
+                continue
+
+            if echo_play_perc < previous and echo_play_perc > play_perc:
+                if echo_play_perc != 0 and count <= 24:
+                    count += 1
+                    embed.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+
+                elif echo_play_perc != 0 and count == 25:
+                    count += 1
+                    embed2=discord.Embed(color=0xf3e91d)
+                    embed2.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+                
+                elif echo_play_perc != 0 and count > 25:
+                    count += 1
+                    embed2.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+            
+            if sigma_play_perc < previous and sigma_play_perc > play_perc:
+                if echo_play_perc != 0 and count <= 24:
+                    count += 1
+                    embed.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+
+                elif sigma_play_perc != 0 and count == 25:
+                    count += 1
+                    embed2=discord.Embed(color=0xf3e91d)
+                    embed2.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+                
+                elif sigma_play_perc != 0 and count > 25:
+                    count += 1
+                    embed2.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+
+            previous = play_perc
+            
+
             if play_perc != 0 and count <= 24:
                 count += 1
                 embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
@@ -250,7 +314,7 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                 count += 1
                 embed2.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
 
-        if count < 25:
+        if count <= 25:
             embed.set_footer(text=last_updated)
             await ctx.send(embed=embed)
 
@@ -301,8 +365,18 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                         moira.time += elem[26]
                         wrecking_ball.time += elem[27]
                         ashe.time += elem[28]
-                        baptiste.time += elem[29]
-                        sigma.time += elem[30]
+
+                        if k <= 3:
+                            baptiste.time += elem[29]
+                            sigma.time += elem[30]
+                            sigma_total_time += elem[31]
+
+                        else:
+                            echo.time += elem[29]
+                            baptiste.time += elem[30]
+
+                        if k >= 5:
+                            echo_total_time += elem[31]  
 
 
         if flip:
@@ -326,9 +400,54 @@ async def playtime(ctx, team_name=None, start=None, end=None):
 
         all_heroes = sorted(all_heroes, key=lambda x: x.time, reverse=True)
 
+        if echo_total_time == 0:
+            echo_play_perc = 0
+        else:
+            echo_play_perc = (echo.time / echo_total_time) * 100
+        if sigma_total_time == 0:
+            sigma_play_perc = 0
+        else:
+            sigma_play_perc = (sigma.time / sigma_total_time) * 100
+
+        previous = 100
 
         for hero in all_heroes:
             play_perc = (hero.time / total_time) * 100
+
+            if hero.name == "Echo" or hero.name == "Sigma":
+                continue
+
+            if echo_play_perc < previous and echo_play_perc > play_perc:
+                if echo_play_perc != 0 and count <= 24:
+                    count += 1
+                    embed.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+
+                elif echo_play_perc != 0 and count == 25:
+                    count += 1
+                    embed2=discord.Embed(color=0xf3e91d)
+                    embed2.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+                
+                elif echo_play_perc != 0 and count > 25:
+                    count += 1
+                    embed2.add_field(name=echo.emote + " " + echo.name, value="{0:.1f}%".format(echo_play_perc), inline=True)
+            
+            if sigma_play_perc < previous and sigma_play_perc > play_perc:
+                if echo_play_perc != 0 and count <= 24:
+                    count += 1
+                    embed.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+
+                elif sigma_play_perc != 0 and count == 25:
+                    count += 1
+                    embed2=discord.Embed(color=0xf3e91d)
+                    embed2.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+                
+                elif sigma_play_perc != 0 and count > 25:
+                    count += 1
+                    embed2.add_field(name=sigma.emote + " " + sigma.name, value="{0:.1f}%".format(sigma_play_perc), inline=True)
+
+            previous = play_perc
+
+
             if play_perc != 0 and count <= 24:
                 count += 1
                 embed.add_field(name=hero.emote + " " + hero.name, value="{0:.1f}%".format(play_perc), inline=True)
@@ -648,8 +767,10 @@ def scan_data():
                     if y.name == row[0] and y.team == match_save.teams[0]:
 
                         temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
+
                         while len(temp_playtime) < 31:
                             temp_playtime.append(0)
+
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_1 = temp_playtime
                         match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
@@ -657,6 +778,7 @@ def scan_data():
                         temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
                         while len(temp_playtime) < 31:
                             temp_playtime.append(0)
+
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_2 = temp_playtime
                         match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
@@ -666,6 +788,7 @@ def scan_data():
                         temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
                         while len(temp_playtime) < 31:
                             temp_playtime.append(0)
+
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_1 = temp_playtime
                         match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
@@ -673,6 +796,7 @@ def scan_data():
                         temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
                         while len(temp_playtime) < 31:
                             temp_playtime.append(0)
+
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_2 = temp_playtime
                         match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
