@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated April 27th, 2020 at 12:15 am."
+last_updated = "Last updated May 3rd, 2020 at 9:52 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
@@ -36,14 +36,17 @@ async def standings(ctx):
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
 
-    embed.add_field(name="1. Game Hive", value="W: 15 L: 2 Diff: +13", inline=False) # Wins: 5
-    embed.add_field(name="2. Fewbisoft", value="W: 15 L: 5 Diff: +10", inline=False) # Wins: 5
-    embed.add_field(name="3. Everything Hurts", value="W: 10 L: 10 Diff: +0", inline=False) # Wins: 3
-    embed.add_field(name="4. Stacy's Moms", value="W: 9 L: 10 Diff: -1", inline=False) # Wins: 2
-    embed.add_field(name="4. Onibaku", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 2
-    embed.add_field(name="6. Cronchers of Catan", value="W: 7 L: 11 Diff: -4", inline=False) # Wins: 2
-    embed.add_field(name="7. Finer Things Club", value="W: 6 L: 13 Diff: -7", inline=False) # Wins: 1
-    embed.add_field(name="8. Nerf Mei", value="W: 5 L: 15 Diff: -10", inline=False) # Wins: 0
+    embed.add_field(name="1. Game Hive", value="W: 18 L: 4 Diff: +14", inline=False) # Wins: 6
+    embed.add_field(name="2. Fewbisoft", value="W: 17 L: 8 Diff: +9", inline=False) # Wins: 5
+    embed.add_field(name="3. Everything Hurts", value="W: 13 L: 11 Diff: +2", inline=False) # Wins: 4
+
+    embed.add_field(name="4. Cronchers of Catan", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 3
+
+    embed.add_field(name="5. Onibaku", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 2
+    embed.add_field(name="6. Stacy's Moms", value="W: 10 L: 13 Diff: -3", inline=False) # Wins: 2
+
+    embed.add_field(name="7. Finer Things Club", value="W: 8 L: 16 Diff: -8", inline=False) # Wins: 1
+    embed.add_field(name="8. Nerf Mei", value="W: 8 L: 17 Diff: -9", inline=False) # Wins: 1
 
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
@@ -84,13 +87,13 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for May 3rd", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for May 10th", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="Numbani, Volskaya Industries, Watchpoint: Gilbraltar, Eichenwalde, Oasis", inline=False)
-    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Finer Things Club vs. Nerf Mei\n\
-                                            4:00pm (login @ 3:45pm) - Cronchers of Catan vs. Onibaku\n\
-                                            6:00pm (login @ 5:45pm) - Stacy's Moms vs. Everything Hurts\n\
-                                            8:00pm (login @ 7:45pm) - Fewbisoft vs. Game Hive", inline=False)
+    embed.add_field(name="Maps", value="Nepal, Route 66, Temple of Anubis, Hollywood, Ilios", inline=False)
+    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Stacy's Moms vs. Nerf Mei\n\
+                                            4:00pm (login @ 3:45pm) - Finer Things Club vs. Game Hive\n\
+                                            6:00pm (login @ 5:45pm) - Fewbisoft vs. Onibaku\n\
+                                            8:00pm (login @ 7:45pm) - Cronchers of Catan vs. Everything Hurts", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
@@ -229,6 +232,9 @@ async def playtime(ctx, team_name=None, start=None, end=None):
 
         count = 0
 
+        all_heroes = sorted(all_heroes, key=lambda x: x.time, reverse=True)
+
+
         for hero in all_heroes:
             play_perc = (hero.time / total_time) * 100
             if play_perc != 0 and count <= 24:
@@ -317,6 +323,9 @@ async def playtime(ctx, team_name=None, start=None, end=None):
         embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
         count = 0
+
+        all_heroes = sorted(all_heroes, key=lambda x: x.time, reverse=True)
+
 
         for hero in all_heroes:
             play_perc = (hero.time / total_time) * 100
@@ -688,7 +697,7 @@ rank_crouches = ranking_maker("crouches")
 
 
 client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+# client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
