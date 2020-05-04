@@ -528,7 +528,7 @@ async def stats(ctx, name=None, start=None, end=None):
             if start is None:
                 str_elims = " (#" + str(rank_eliminations.index(p) + 1) + ")"
                 str_fb = " (#" + str(rank_finalblows.index(p) + 1) + ")"
-                str_deaths = " (#" + str(rank_deaths.index(p) + 1) + ")"
+                str_deaths = " (#" + str(rank_least_deaths.index(p) + 1) + ")"
                 str_damage = " (#" + str(rank_damage.index(p) + 1) + ")"
                 str_heal = " (#" + str(rank_healing.index(p) + 1) + ")"
                 str_dmgt = " (#" + str(rank_damagereceived.index(p) + 1) + ")"
@@ -545,7 +545,7 @@ async def stats(ctx, name=None, start=None, end=None):
             embed.add_field(name="Healing Received", value="Total: " + "{0:.2f}".format(total_healing_taken) + "\nAvg/10mins: " + healt_pt + str_healt, inline=True)
             embed.add_field(name="Ults Used", value="Total: " + str(total_ults_used) + "\nAvg/10mins: " + ults_pt + str_ults, inline=True)
             embed.add_field(name="Tactical Crouches", value="Total: " + str(total_crouches) + "\nAvg/10mins: " + crouch_pt + str_crouches, inline=True)
-            embed.set_footer(text=last_updated)
+            embed.set_footer(text="Death ranking is for least deaths per 10.\n" + last_updated)
             await ctx.send(embed=embed)
             return
     
@@ -688,6 +688,7 @@ scan_data()
 rank_eliminations = ranking_maker("eliminations")
 rank_finalblows = ranking_maker("finalblows")
 rank_deaths = ranking_maker("deaths")
+rank_least_deaths = ranking_maker("leastdeaths")
 rank_damage = ranking_maker("damage")
 rank_healing = ranking_maker("healing")
 rank_damagereceived = ranking_maker("damagereceived")
