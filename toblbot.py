@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated May 10th, 2020 at 7:59 pm."
+last_updated = "Last updated May 11th, 2020 at 1:43 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
@@ -35,19 +35,18 @@ async def standings(ctx):
     embed=discord.Embed(title="Current Standings", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
 
+    embed.add_field(name="1. Game Hive", value="W: 20 L: 7 Diff: +13", inline=False) # Wins: 6
+    embed.add_field(name="2. Fewbisoft", value="W: 20 L: 9 Diff: +11", inline=False) # Wins: 6
+    embed.add_field(name="3. Everything Hurts", value="W: 16 L: 11 Diff: +5", inline=False) # Wins: 5
 
-    embed.add_field(name="1. Game Hive", value="W: 18 L: 4 Diff: +14", inline=False) # Wins: 6
-    embed.add_field(name="2. Fewbisoft", value="W: 17 L: 8 Diff: +9", inline=False) # Wins: 5
-    embed.add_field(name="3. Everything Hurts", value="W: 13 L: 11 Diff: +2", inline=False) # Wins: 4
+    embed.add_field(name="4. Cronchers of Catan", value="W: 10 L: 14 Diff: -4", inline=False) # Wins: 3
 
-    embed.add_field(name="4. Cronchers of Catan", value="W: 10 L: 11 Diff: -1", inline=False) # Wins: 3
+    embed.add_field(name="5. Stacy's Moms", value="W: 11 L: 16 Diff: -5", inline=False) # Wins: 2
+    embed.add_field(name="6. Onibaku", value="W: 11 L: 17 Diff: -6", inline=False) # Wins: 2
 
-    embed.add_field(name="5. Stacy's Moms", value="W: 10 L: 13 Diff: -3", inline=False) # Wins: 2
-    embed.add_field(name="6. Onibaku", value="W: 10 L: 14 Diff: -4", inline=False) # Wins: 2
+    embed.add_field(name="7. Nerf Mei", value="W: 11 L: 18 Diff: -7", inline=False) # Wins: 2
 
-
-    embed.add_field(name="7. Finer Things Club", value="W: 8 L: 16 Diff: -8", inline=False) # Wins: 1
-    embed.add_field(name="8. Nerf Mei", value="W: 8 L: 17 Diff: -9", inline=False) # Wins: 1
+    embed.add_field(name="8. Finer Things Club", value="W: 11 L: 18 Diff: -7", inline=False) # Wins: 2
 
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
@@ -89,13 +88,14 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for May 10th", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for May 24th (PLAYOFFS!!)", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="Nepal, Route 66, Temple of Anubis, Hollywood, Ilios", inline=False)
-    embed.add_field(name="Matches", value="2:00pm (login @ 1:45pm) - Stacy's Moms vs. Nerf Mei\n\
-                                            4:00pm (login @ 3:45pm) - Finer Things Club vs. Game Hive\n\
-                                            6:00pm (login @ 5:45pm) - Fewbisoft vs. Onibaku\n\
-                                            8:00pm (login @ 7:45pm) - Cronchers of Catan vs. Everything Hurts", inline=False)
+    embed.add_field(name="Maps", value="2:00pm and 4:00pm: Nepal, Hollywood, Volskaya, Route 66, Ilios (Contingency Map = Junkertown)\n\
+                                        6:00pm and 8:00pm: Ilios, Route 66, Volskaya, Hollywood, Nepal (Contingency Map = Junkertown)", inline=False)
+    embed.add_field(name="Matches", value="2:00pm . The 5th place seed will play the 8th place seed.\n\
+                                            4:00pm . The 6th place seed will play the 7th place seed.\n\
+                                            6:00pm . The winner of the 2:00pm match (5th vs. 8th) will play the 4th seed.\n\
+                                            8:00pm . The winner of the 4:00pm match (6th vs. 7th) will play the 3rd seed.", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
