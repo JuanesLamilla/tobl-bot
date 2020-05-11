@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated May 5th, 2020 at 2:29 pm."
+last_updated = "Last updated May 10th, 2020 at 7:59 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
@@ -67,9 +67,10 @@ async def maps(ctx):
     embed.add_field(name="April 26th, 2020", value="Rialto, Blizzard World, Busan, Paris, Dorado", inline=True)
     embed.add_field(name="May 3rd, 2020", value="Numbani, Volskaya Industries, Watchpoint: Gilbraltar, Eichenwalde, Oasis", inline=True)
     embed.add_field(name="May 10th, 2020", value="Nepal, Route 66, Temple of Anubis, Hollywood, Ilios", inline=True)
-    embed.add_field(name="May 24th, 2020", value="Maps TBA", inline=True)
-    embed.add_field(name="May 31st, 2020", value="Maps TBA", inline=True)
-    embed.add_field(name="June 7th, 2020", value="Maps TBA", inline=True)
+    embed.add_field(name="May 24th, 2020", value="2:00pm and 4:00pm: Nepal, Hollywood, Volskaya, Route 66, Ilios (Contingency Map = Junkertown)\n\
+                                        6:00pm and 8:00pm: Ilios, Route 66, Volskaya, Hollywood, Nepal (Contingency Map = Junkertown)", inline=True)
+    embed.add_field(name="May 31st, 2020", value="4:00pm and 6:00pm: Dorado, Oasis, Temple of Anubis, Eichenwalde, Havana (Contingency Map = Lijiang Tower)", inline=True)
+    embed.add_field(name="June 7th, 2020", value="Lijiang Tower, King’s Row, Watchpoint: Gibraltar, Hanamura, Busan, Numbani, Rialto (Contingency Map = Oasis)", inline=True)
     await ctx.send(embed=embed)
 
 @client.command(pass_context = True)
@@ -130,9 +131,14 @@ async def schedule(ctx):
                                             4:00pm (login @ 3:45pm) - Finer Things Club vs. Game Hive\n\
                                             6:00pm (login @ 5:45pm) - Fewbisoft vs. Onibaku\n\
                                             8:00pm (login @ 7:45pm) - Cronchers of Catan vs. Everything Hurts", inline=False)
-    embed.add_field(name="May 24th, 2020", value="TBA", inline=False)
-    embed.add_field(name="May 31st, 2020", value="TBA", inline=False)
-    embed.add_field(name="June 7th, 2020", value="TBA", inline=False)       
+    embed.add_field(name="May 24th, 2020", value="2:00pm . The 5th place seed will play the 8th place seed.\n\
+                                            4:00pm . The 6th place seed will play the 7th place seed.\n\
+                                            6:00pm . The winner of the 2:00pm match (5th vs. 8th) will play the 4th seed.\n\
+                                            8:00pm . The winner of the 4:00pm match (6th vs. 7th) will play the 3rd seed.", inline=False)
+    embed.add_field(name="May 31st, 2020", value="4:00pm . The highest seed winner from May 24th will play the 2nd seed.\n\
+                                            6:00pm . The lowest seed winner from May 24th will play the 1st seed.", inline=False)
+    embed.add_field(name="June 7th, 2020", value="4:00pm . Consolations Finals!\n\
+                                            6:00pm . SEASON FIVE GRAND FINALS!", inline=False)       
     await ctx.send(embed=embed)
 
 @client.command()
@@ -192,7 +198,7 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                 
                 for elem in t.playrate_data[k]:   
 
-                    total_time += elem[31]
+                    
                     reaper.time += elem[0]
                     tracer.time += elem[1]
                     mercy.time += elem[2]
@@ -227,10 +233,19 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                         baptiste.time += elem[29]
                         sigma.time += elem[30]
                         sigma_total_time += elem[31]
+                        total_time += elem[31]
 
+                    elif k <= 6:
+                        echo.time += elem[29]
+                        baptiste.time += elem[30]
+                        total_time += elem[31]
+                    
                     else:
                         echo.time += elem[29]
                         baptiste.time += elem[30]
+                        sigma.time += elem[31]
+                        sigma_total_time += elem[32]
+                        total_time += elem[32]
 
                     if k >= 5:
                         echo_total_time += elem[31]  
@@ -335,7 +350,6 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                     if not end is None and (k > int(end) or k < int(start)):
                         continue
                     for elem in t.playrate_data[k]:
-                        total_time += elem[31]
                         reaper.time += elem[0]
                         tracer.time += elem[1]
                         mercy.time += elem[2]
@@ -370,10 +384,19 @@ async def playtime(ctx, team_name=None, start=None, end=None):
                             baptiste.time += elem[29]
                             sigma.time += elem[30]
                             sigma_total_time += elem[31]
+                            total_time += elem[31]
 
+                        elif k <= 6:
+                            echo.time += elem[29]
+                            baptiste.time += elem[30]
+                            total_time += elem[31]
+                        
                         else:
                             echo.time += elem[29]
                             baptiste.time += elem[30]
+                            sigma.time += elem[31]
+                            sigma_total_time += elem[32]
+                            total_time += elem[32]
 
                         if k >= 5:
                             echo_total_time += elem[31]  
@@ -768,16 +791,24 @@ def scan_data():
 
                         temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
 
-                        while len(temp_playtime) < 31:
-                            temp_playtime.append(0)
+                        if match_save.week <= 6:
+                            while len(temp_playtime) < 31:
+                                temp_playtime.append(0)
+                        else:
+                            while len(temp_playtime) < 32:
+                                temp_playtime.append(0)
 
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_1 = temp_playtime
                         match_save.teams[0].playrate_data[match_save.week].append(temp_playtime)
 
                         temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
-                        while len(temp_playtime) < 31:
-                            temp_playtime.append(0)
+                        if match_save.week <= 6:
+                            while len(temp_playtime) < 31:
+                                temp_playtime.append(0)
+                        else:
+                            while len(temp_playtime) < 32:
+                                temp_playtime.append(0)
 
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_2 = temp_playtime
@@ -786,16 +817,24 @@ def scan_data():
                     elif y.name == row[6] and y.team == match_save.teams[0]:
 
                         temp_playtime = [int(i.replace(" ", "")) for i in row[31].replace("{", "").replace("}", "").split(";")]
-                        while len(temp_playtime) < 31:
-                            temp_playtime.append(0)
+                        if match_save.week <= 6:
+                            while len(temp_playtime) < 31:
+                                temp_playtime.append(0)
+                        else:
+                            while len(temp_playtime) < 32:
+                                temp_playtime.append(0)
 
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_1 = temp_playtime
                         match_save.teams[1].playrate_data[match_save.week].append(temp_playtime)
 
                         temp_playtime = [int(i.replace(" ", "")) for i in row[32].replace("{", "").replace("}", "").split(";")]
-                        while len(temp_playtime) < 31:
-                            temp_playtime.append(0)
+                        if match_save.week <= 6:
+                            while len(temp_playtime) < 31:
+                                temp_playtime.append(0)
+                        else:
+                            while len(temp_playtime) < 32:
+                                temp_playtime.append(0)
 
                         temp_playtime.append(int(row[17]))
                         current_round.hero_playtime_2 = temp_playtime
@@ -822,7 +861,7 @@ rank_crouches = ranking_maker("crouches")
 
 
 client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-# client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
