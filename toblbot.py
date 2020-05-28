@@ -8,9 +8,9 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated May 11th, 2020 at 1:43 pm."
+last_updated = "Last updated May 25th, 2020 at 8:34 am."
 
-client = commands.Bot(command_prefix = '$') # $ for live
+client = commands.Bot(command_prefix = '!') # $ for live
 client.remove_command('help')
 
 @client.event
@@ -88,14 +88,11 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for May 24th (PLAYOFFS!!)", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for May 31st (PLAYOFFS!!)", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="2:00pm and 4:00pm: Nepal, Hollywood, Volskaya, Route 66, Ilios (Contingency Map = Junkertown)\n\
-                                        6:00pm and 8:00pm: Ilios, Route 66, Volskaya, Hollywood, Nepal (Contingency Map = Junkertown)", inline=False)
-    embed.add_field(name="Matches", value="2:00pm . The 5th place seed will play the 8th place seed.\n\
-                                            4:00pm . The 6th place seed will play the 7th place seed.\n\
-                                            6:00pm . The winner of the 2:00pm match (5th vs. 8th) will play the 4th seed.\n\
-                                            8:00pm . The winner of the 4:00pm match (6th vs. 7th) will play the 3rd seed.", inline=False)
+    embed.add_field(name="Maps", value="4:00pm and 6:00pm: Dorado, Oasis, Temple of Anubis, Eichenwalde, Havana (Contingency Map = Lijiang Tower)", inline=False)
+    embed.add_field(name="Matches", value="4:00pm . The highest seed winner from May 24th will play the 2nd seed.\n\
+                                            6:00pm . The lowest seed winner from May 24th will play the 1st seed.", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
@@ -860,8 +857,8 @@ rank_ults = ranking_maker("ults")
 rank_crouches = ranking_maker("crouches")
 
 
-client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+#client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
+client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
