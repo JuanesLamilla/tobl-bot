@@ -10,7 +10,7 @@ players = []
 matches = []
 last_updated = "Last updated May 25th, 2020 at 8:34 am."
 
-client = commands.Bot(command_prefix = '!') # $ for live
+client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
 
 @client.event
@@ -857,8 +857,8 @@ rank_ults = ranking_maker("ults")
 rank_crouches = ranking_maker("crouches")
 
 
-#client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
+#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
