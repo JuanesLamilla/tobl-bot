@@ -10,7 +10,7 @@ players = []
 matches = []
 last_updated = "Last updated May 25th, 2020 at 8:34 am."
 
-client = commands.Bot(command_prefix = '$') # $ for live
+client = commands.Bot(command_prefix = '!') # $ for live
 client.remove_command('help')
 
 @client.event
@@ -494,11 +494,17 @@ async def playtime(ctx, team_name=None, start=None, end=None):
     await ctx.send("Idk what happened for us to reach this point....")
 
 @client.command()
-async def top10(ctx, stat=None, pt=None):
+async def top10(ctx, stat=None, pt=None, start=None, end=None):
     if stat is None:
         await ctx.send("Missing argument: Desired Statistic\
             \nChoose from any of the follow: eliminations, finalblows, deaths, damage, healing, ults, crouches, damagereceived, healingreceived\n(ex: '$top10 damage')")
         return
+
+    if pt == "-":
+        pt = None
+
+    if not start is None and end is None:
+        end = start
     
     check = 0
     if stat.lower() == "eliminations":
@@ -524,23 +530,31 @@ async def top10(ctx, stat=None, pt=None):
         return
 
     for p in players:
-        
+
+        sum_time = 0
         p.sorting_stat = 0
         
         for k in p.map_data.keys():
             
+
+            if not end is None and (k > int(end) or k < int(start)):
+                continue
+            
+            for elem in p.playtime[k]:
+                sum_time += elem        
+
                 #{60; 22; 21; 15117.47; 0; 15793.74; 6543.80; 7}
             for elem in p.map_data[k]:
                 p.sorting_stat += float(elem[check])
         
-        if pt is not None and pt.lower() == "per10" and p.total_playtime >= 600:
-            p.sorting_stat = p.sorting_stat*(10/(p.total_playtime // 60))
+        if pt is not None and pt.lower() == "per10" and sum_time >= 600:
+            p.sorting_stat = p.sorting_stat*(10/(sum_time // 60))
         elif pt is not None and pt.lower() == "per10" and stat.lower() == "leastdeaths":
             p.sorting_stat = 999999
         elif pt is not None and pt.lower() == "per10":
             p.sorting_stat = 0
 
-        if p.total_playtime < 600 and stat.lower() == "leastdeaths":
+        if sum_time < 600 and stat.lower() == "leastdeaths":
             p.sorting_stat = 999999
 
                 
@@ -550,9 +564,24 @@ async def top10(ctx, stat=None, pt=None):
         sorted_players = sorted(players, key=lambda x: x.sorting_stat, reverse=True)
 
     if pt is not None and pt.lower() == "per10":
-        embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for all weeks.", color=0xf3e91d)
+
+        if end is None:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for all weeks.", color=0xf3e91d)
+        elif end == start:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for week " + start + ".", color=0xf3e91d)
+        else:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat + " avg per 10 minutes", description="Showing stats for weeks " + start + " to " + end + ".", color=0xf3e91d)            
+        
     else:
-        embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for all weeks.", color=0xf3e91d)
+
+        if end is None:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for all weeks.", color=0xf3e91d)
+        elif end == start:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for week " + start + ".", color=0xf3e91d)
+        else:
+            embed=discord.Embed(title="Top 10 Players for Stat: " + stat, description="Showing stats for weeks " + start + " to " + end + ".", color=0xf3e91d)            
+
+
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
     for i in range(10):
         if (pt is not None and pt.lower() == "per10") or stat.lower() == "damage" or stat.lower() == "healing" or stat.lower() == "healingreceived" or stat.lower() == "damagereceived": 
@@ -857,8 +886,8 @@ rank_ults = ranking_maker("ults")
 rank_crouches = ranking_maker("crouches")
 
 
-client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+#client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
+client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
 
 
 
