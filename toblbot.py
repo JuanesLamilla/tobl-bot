@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated May 25th, 2020 at 8:34 am."
+last_updated = "Last updated June 1st, 2020 at 3:45 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
@@ -88,11 +88,11 @@ async def help(ctx):
 
 @client.command()
 async def upcoming(ctx):
-    embed=discord.Embed(title="Matches for May 31st (PLAYOFFS!!)", description="Next upcoming games.", color=0xf3e91d)
+    embed=discord.Embed(title="Matches for June 7th (FINALS!!)", description="Next upcoming games.", color=0xf3e91d)
     embed.set_thumbnail(url="http://overwatchtoronto.org/images/logo_white.png")
-    embed.add_field(name="Maps", value="4:00pm and 6:00pm: Dorado, Oasis, Temple of Anubis, Eichenwalde, Havana (Contingency Map = Lijiang Tower)", inline=False)
-    embed.add_field(name="Matches", value="4:00pm . The highest seed winner from May 24th will play the 2nd seed.\n\
-                                            6:00pm . The lowest seed winner from May 24th will play the 1st seed.", inline=False)
+    embed.add_field(name="Maps", value="Lijiang Tower, King’s Row, Watchpoint: Gibraltar, Hanamura, Busan, Numbani, Rialto (Contingency Map = Oasis)", inline=False)
+    embed.add_field(name="Matches", value="4:00pm . Consolations Finals!\n\
+                                            6:00pm . SEASON FIVE GRAND FINALS!", inline=False)
     embed.set_footer(text=last_updated)
     await ctx.send(embed=embed)
 
