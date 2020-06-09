@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound
 teams = []
 players = []
 matches = []
-last_updated = "Last updated June 1st, 2020 at 3:45 pm."
+last_updated = "Last updated June 8th, 2020 at 9:46 pm."
 
 client = commands.Bot(command_prefix = '$') # $ for live
 client.remove_command('help')
