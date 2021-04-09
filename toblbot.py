@@ -5,6 +5,8 @@ from stattracker import team, player, map_round, match, Hero
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
+discord_token = ""
+
 teams = []
 players = []
 matches = []
@@ -886,8 +888,7 @@ rank_ults = ranking_maker("ults")
 rank_crouches = ranking_maker("crouches")
 
 
-client.run('Njg1MTg5OTA3OTQwOTAwODY5.XmFFGA.5Rg5_RrWeboBw9LQ6XGWNbf8BL8') # Live
-#client.run('NzA1NTczMjgxNDczODg4MjU3.XqtsGA.CWoeoGuAQFgM8ebg7EhIpOgMG7M') # Tester
+client.run(discord_token)
 
 
 
